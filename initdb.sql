@@ -1,0 +1,2 @@
+CREATE DATABASE stop;
+CREATE DATABASE stop_test;
