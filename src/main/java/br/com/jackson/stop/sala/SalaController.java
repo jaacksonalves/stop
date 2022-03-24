@@ -1,11 +1,12 @@
 package br.com.jackson.stop.sala;
 
+import br.com.jackson.stop.compartilhado.anotacoes.ICP;
+import br.com.jackson.stop.sala.validadores.ValidaLetrasPermitidas;
+import br.com.jackson.stop.sala.validadores.ValidaQuantidadeLetrasCompativeisComRodadas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/salas")
-// ICP(4.0)
+@ICP(6.0)
 public class SalaController {
 
   // 2
@@ -24,6 +25,13 @@ public class SalaController {
   public SalaController(SalaRepository salaRepository, CategoriaRepository categoriaRepository) {
     this.salaRepository = salaRepository;
     this.categoriaRepository = categoriaRepository;
+  }
+
+  @InitBinder
+  public void init(WebDataBinder binder) {
+    binder.addValidators(
+        // 2
+        new ValidaLetrasPermitidas(), new ValidaQuantidadeLetrasCompativeisComRodadas());
   }
 
   @PostMapping

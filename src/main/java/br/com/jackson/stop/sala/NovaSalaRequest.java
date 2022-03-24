@@ -1,73 +1,25 @@
 package br.com.jackson.stop.sala;
 
-import javax.validation.constraints.*;
+import br.com.jackson.stop.compartilhado.anotacoes.ICP;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
-// ICP(8.0)
-public class NovaSalaRequest {
+@ICP(8.5)
+public record NovaSalaRequest(@NotNull @Positive @Max(12) int rodadas,
+                              @NotNull @Positive @Max(12) int maximoJogadores,
+                              String senha,
+                              @NotNull @NotEmpty List<String> categorias,
+                              @NotNull @NotEmpty List<String> letras,
+                              @NotNull TempoJogo tempoJogo) {
 
-  // 0.5
-  @NotNull
-  @Positive
-  @Max(12)
-  public final int rodadas;
-
-  // 0.5
-  @NotNull
-  @Positive
-  @Max(12)
-  public final int maximoJogadores;
-
-  // 0.5
-  public final String senha;
-
-  // 0.5
-  @NotNull @NotEmpty public final List<String> categorias;
-
-  // 0.5
-  @NotNull @NotEmpty
-  public final List<
-          @Pattern(regexp = "^[A-Z]", message = "Apenas são permitidas letras de A a Z") String>
-      letras;
-
-  // 0.5
-  @NotNull public final TempoJogo tempoJogo;
-
-  public NovaSalaRequest(
-      int rodadas,
-      int maximoJogadores,
-      String senha,
-      List<String> categorias,
-      List<String> letras,
-      TempoJogo tempoJogo) {
-    validaLetrasCompativelRodadas(letras, rodadas);
-
-    this.rodadas = rodadas;
-    this.maximoJogadores = maximoJogadores;
-    this.senha = senha;
-    this.categorias = categorias;
-    this.letras = letras;
-    this.tempoJogo = tempoJogo;
-  }
-
-  /** A quantidade de letras deve ser igual ao número de rodadas. */
-  private void validaLetrasCompativelRodadas(List<String> letras, int rodadas) {
-    //1
-    if (letras.size() < rodadas) {
-      throw new IllegalArgumentException(
-          "A quantidade de letras deve ser maior ou igual ao número de rodadas");
-    }
-  }
-
-  // #nãoSeiExplicar: jackson - por algum motivo o @Pattern só funciona se eu deixar esse getter
-  // aqui
-  public List<String> getLetras() {
-    return letras;
-  }
-
-  // 1
+  // 2
   public Sala toSala(CategoriaRepository categoriaRepository) {
+      //1
     var listaCategorias = new ArrayList<Categoria>();
 
     // ps.: não gostei muito dessa solução. Tentei fazer com stram().map(), mas não funcionou,
@@ -83,18 +35,20 @@ public class NovaSalaRequest {
     //            .toList();
 
     this.categorias.forEach(
-        nomeCategoria -> {
-          // 1
-          if (!categoriaRepository.existsByNome(nomeCategoria)) {
-            listaCategorias.add(categoriaRepository.save(new Categoria(nomeCategoria)));
-            // 1
-          } else {
-            listaCategorias.add(
-                categoriaRepository.findByNome(nomeCategoria).orElse(new Categoria(nomeCategoria)));
-          }
-        });
+            nomeCategoria -> {
+              // 1
+              if (!categoriaRepository.existsByNome(nomeCategoria)) {
+                listaCategorias.add(categoriaRepository.save(new Categoria(nomeCategoria)));
+                // 1
+              } else {
+                listaCategorias.add(
+                        categoriaRepository.findByNome(nomeCategoria).orElse(new Categoria(nomeCategoria)));
+              }
+            });
 
-    // 1
     return new Sala(rodadas, maximoJogadores, senha, listaCategorias, letras, tempoJogo);
   }
+
+
+
 }

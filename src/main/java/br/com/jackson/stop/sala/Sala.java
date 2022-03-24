@@ -1,5 +1,6 @@
 package br.com.jackson.stop.sala;
 
+import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -14,7 +15,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-// ICP(6.0)
+@ICP(6.0)
 public class Sala {
 
   // 0.5
@@ -25,11 +26,11 @@ public class Sala {
 
   // 0.5
   @Column(nullable = false)
-  private Integer rodadas;
+  private int rodadas;
 
   // 0.5
   @Column(nullable = false)
-  private Integer maximoJogadores;
+  private int maximoJogadores;
 
   // 0.5
   private String senha;
