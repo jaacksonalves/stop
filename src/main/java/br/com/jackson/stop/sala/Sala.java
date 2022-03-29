@@ -1,6 +1,8 @@
 package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
+import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -41,6 +43,7 @@ public class Sala {
   // 0.5
   @Column(nullable = false)
   @ElementCollection
+  @LetrasPermitidas
   private List<String> letras;
 
   // 1
@@ -61,8 +64,8 @@ public class Sala {
       @NotNull @Positive @Max(12) int rodadas,
       @NotNull @Positive @Max(12) int maximoJogadores,
       String senha,
-      @NotNull @NotEmpty List<Categoria> categorias,
-      @NotNull @NotEmpty List<String> letras,
+      @NotNull @NotEmpty @UniqueElements List<Categoria> categorias,
+      @NotNull @NotEmpty @LetrasPermitidas List<String> letras,
       @NotNull TempoJogo tempoJogo) {
     Assert.state(rodadas >= 1 && rodadas <= 12, "Rodadas devem estar entre 1 e 12");
     Assert.state(
