@@ -3,25 +3,26 @@ package br.com.jackson.stop.sala;
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasCompativeisRodadas;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
-@ICP(8.5)
+@ICP(9.5)
 @LetrasCompativeisRodadas
-public record NovaSalaRequest(@NotNull @Positive @Max(12) int rodadas,
-                              @NotNull @Positive @Max(12) int maximoJogadores,
-                              String senha,
-                              @NotNull @NotEmpty @UniqueElements List<String> categorias,
-                              @NotNull @NotEmpty @LetrasPermitidas List< String> letras,
-                              @NotNull TempoJogo tempoJogo) {
+public record NovaSalaRequest(//3.5
+        @NotNull @Range(min = 1, max = 12) int rodadas,
+        @NotNull @Range(min = 1, max = 12) int maximoJogadores,
+        String senha,
+        @NotNull @NotEmpty @UniqueElements List<String> categorias,
+        @NotNull @NotEmpty @UniqueElements @LetrasPermitidas List< String> letras,
+        @NotNull TempoJogo tempoJogo) {
 
-  // 2
+  // 1
   public Sala toSala(CategoriaRepository categoriaRepository) {
       //1
     var listaCategorias = new ArrayList<Categoria>();
@@ -43,13 +44,24 @@ public record NovaSalaRequest(@NotNull @Positive @Max(12) int rodadas,
               // 1
               if (!categoriaRepository.existsByNome(nomeCategoria)) {
                 listaCategorias.add(categoriaRepository.save(new Categoria(nomeCategoria)));
-                // 1
-              } else {
-                listaCategorias.add(
-                        categoriaRepository.findByNome(nomeCategoria).orElse(new Categoria(nomeCategoria)));
+                  return;
               }
+              listaCategorias.add(
+                        categoriaRepository.findByNome(nomeCategoria).orElse(new Categoria(nomeCategoria)));
+
             });
 
-    return new Sala(rodadas, maximoJogadores, senha, listaCategorias, letras, tempoJogo);
+    //1
+    var novaSala = new Sala(rodadas, maximoJogadores, listaCategorias, letras, tempoJogo);
+    //1
+    if (StringUtils.hasText(senha)) {
+        novaSala.adicionaSenha(this.senha);
+    }
+    return novaSala;
   }
+
+    public boolean letrasCompativeisComRodadas() {
+      //1
+      return this.letras.size() >= this.rodadas;
+    }
 }

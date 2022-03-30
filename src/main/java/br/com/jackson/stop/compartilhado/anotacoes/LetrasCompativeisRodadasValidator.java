@@ -10,6 +10,6 @@ public class LetrasCompativeisRodadasValidator
 
   @Override
   public boolean isValid(NovaSalaRequest request, ConstraintValidatorContext context) {
-    return request.letras().size() >= request.rodadas();
+    return request.letrasCompativeisComRodadas();
   }
 }

@@ -1,11 +1,12 @@
 package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
-import br.com.jackson.stop.sala.validadores.ValidaQuantidadeLetrasCompativeisComRodadas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/salas")
-@ICP(5)
+@ICP(4)
 public class SalaController {
 
   // 2
@@ -26,13 +27,6 @@ public class SalaController {
     this.categoriaRepository = categoriaRepository;
   }
 
-  @InitBinder
-  public void init(WebDataBinder binder) {
-    binder.addValidators(
-        // 1
-        new ValidaQuantidadeLetrasCompativeisComRodadas());
-  }
-
   @PostMapping
   @Transactional
   // 1
@@ -41,12 +35,12 @@ public class SalaController {
     var novaSala = request.toSala(categoriaRepository);
     salaRepository.save(novaSala);
 
-    var uri =
+    var locationURI =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(novaSala.getId())
             .toUri();
 
-    return ResponseEntity.created(uri).build();
+    return ResponseEntity.created(locationURI).build();
   }
 }

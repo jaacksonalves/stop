@@ -2,14 +2,13 @@ package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +27,12 @@ public class Sala {
 
   // 0.5
   @Column(nullable = false)
+  @Range(min = 1, max = 12)
   private int rodadas;
 
   // 0.5
   @Column(nullable = false)
+  @Range(min = 1, max = 12)
   private int maximoJogadores;
 
   // 0.5
@@ -44,6 +45,7 @@ public class Sala {
   @Column(nullable = false)
   @ElementCollection
   @LetrasPermitidas
+  @UniqueElements
   private List<String> letras;
 
   // 1
@@ -61,11 +63,10 @@ public class Sala {
   public Sala() {}
 
   public Sala(
-      @NotNull @Positive @Max(12) int rodadas,
-      @NotNull @Positive @Max(12) int maximoJogadores,
-      String senha,
+      @NotNull @Range(min = 1, max = 12) int rodadas,
+      @NotNull @Range(min = 1, max = 12) int maximoJogadores,
       @NotNull @NotEmpty @UniqueElements List<Categoria> categorias,
-      @NotNull @NotEmpty @LetrasPermitidas List<String> letras,
+      @NotNull @NotEmpty @LetrasPermitidas @UniqueElements List<String> letras,
       @NotNull TempoJogo tempoJogo) {
     Assert.state(rodadas >= 1 && rodadas <= 12, "Rodadas devem estar entre 1 e 12");
     Assert.state(
@@ -76,23 +77,52 @@ public class Sala {
     Assert.notNull(letras, "Letras não pode ser nula");
     Assert.state(!letras.isEmpty(), "Letras não pode ser nula");
     Assert.state(
-        letras.size() >= categorias.size(),
+        letras.size() >= rodadas,
         "A quantidade de letras deve ser maior ou igual ao número de rodadas");
     Assert.notNull(tempoJogo, "Tempo de jogo nao pode ser nulo");
 
-    // 1
-    if (senha != null) {
-      this.privada = true;
-    }
     this.rodadas = rodadas;
     this.maximoJogadores = maximoJogadores;
-    this.senha = senha;
     this.categorias.addAll(categorias);
     this.letras = letras;
     this.tempoJogo = tempoJogo;
   }
 
+  public int getRodadas() {
+    return rodadas;
+  }
+
+  public int getMaximoJogadores() {
+    return maximoJogadores;
+  }
+
+  public String getSenha() {
+    return senha;
+  }
+
+  public List<Categoria> getCategorias() {
+    return categorias;
+  }
+
+  public List<String> getLetras() {
+    return letras;
+  }
+
+  public TempoJogo getTempoJogo() {
+    return tempoJogo;
+  }
+
+  public boolean isPrivada() {
+    return privada;
+  }
+
   public Long getId() {
     return id;
+  }
+
+  // quando uma senha é setada, automaticamente a sala fica privada
+  public void adicionaSenha(String senha) {
+    this.senha = senha;
+    this.privada = true;
   }
 }
