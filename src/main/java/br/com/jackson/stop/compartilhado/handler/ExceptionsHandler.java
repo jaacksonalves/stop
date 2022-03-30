@@ -22,15 +22,11 @@ public class ExceptionsHandler {
   @ResponseStatus(BAD_REQUEST)
   public ValidationExceptionResponse methodArgumentNotValidExceptionHandler(
       MethodArgumentNotValidException ex) {
-
     var map = new HashMap<String, List<String>>();
 
-    if (ex.getBindingResult().getFieldErrors().isEmpty()) {
-      var list = new ArrayList<String>();
-      list.add(ex.getBindingResult().getGlobalErrors().iterator().next().getDefaultMessage());
-      map.put("Erro na requisição", list);
-      return new ValidationExceptionResponse(map);
-    }
+    var list1 = new ArrayList<String>();
+    ex.getBindingResult().getGlobalErrors().forEach(e -> list1.add(e.getDefaultMessage()));
+    map.put("Erro na requisição", list1);
 
     ex.getBindingResult()
         .getFieldErrors()
@@ -39,9 +35,9 @@ public class ExceptionsHandler {
               if (map.containsKey(erro.getField())) {
                 map.get(erro.getField()).add(erro.getDefaultMessage());
               } else {
-                var list = new ArrayList<String>();
-                list.add(erro.getDefaultMessage());
-                map.put(erro.getField(), list);
+                var list2 = new ArrayList<String>();
+                list2.add(erro.getDefaultMessage());
+                map.put(erro.getField(), list2);
               }
             });
 
@@ -49,21 +45,26 @@ public class ExceptionsHandler {
   }
 
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity<String> responseStatusExceptionHandler(ResponseStatusException ex) {
-    return ResponseEntity.status(ex.getStatus()).body(ex.getReason());
+  public ResponseEntity<ExceptionsHandlerResponse> responseStatusExceptionHandler(
+      ResponseStatusException ex) {
+
+    return ResponseEntity.status(ex.getStatus())
+        .body(new ExceptionsHandlerResponse(ex.getReason()));
   }
 
   @ResponseStatus(BAD_REQUEST)
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public String httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception) {
-    var invalidFormat = (InvalidFormatException) exception.getCause();
+  public ExceptionsHandlerResponse httpMessageNotReadableExceptionHandler(
+      HttpMessageNotReadableException ex) {
+    var invalidFormat = (InvalidFormatException) ex.getCause();
 
-    return invalidFormat.getValue() + " não é um valor válido";
+    return new ExceptionsHandlerResponse(invalidFormat.getValue() + " não é um valor válido");
   }
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(BAD_REQUEST)
-  public String exceptionHandler(Exception ex) {
-    return ex.getMessage();
+  public ExceptionsHandlerResponse exceptionHandler(Exception ex) {
+
+    return new ExceptionsHandlerResponse(ex.getLocalizedMessage());
   }
 }
