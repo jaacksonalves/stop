@@ -15,7 +15,7 @@ import static java.lang.annotation.ElementType.TYPE;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LetrasCompativeisRodadas {
 
-  String message() default "A quantidade de letras deve ser maior ou igual ao número de rodadas";
+  String message() default "{letrasCompativeisComRodadas.message}";
 
   Class<?>[] groups() default {};
 

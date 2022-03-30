@@ -5,6 +5,7 @@ import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -39,7 +40,8 @@ public class Sala {
   private String senha;
 
   // 1
-  @ManyToMany private final List<Categoria> categorias = new ArrayList<>();
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private final List<Categoria> categorias = new ArrayList<>();
 
   // 0.5
   @Column(nullable = false)
@@ -122,6 +124,9 @@ public class Sala {
 
   // quando uma senha é setada, automaticamente a sala fica privada
   public void adicionaSenha(String senha) {
+    Assert.state(this.senha != null, "Sala já possui senha cadastrada");
+    Assert.state(StringUtils.hasText(senha), "Senha não pode ser nula ou vazia");
+
     this.senha = senha;
     this.privada = true;
   }

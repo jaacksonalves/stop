@@ -18,7 +18,7 @@ import static java.lang.annotation.ElementType.*;
 @Target({FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LetrasPermitidas {
-  String message() default "Apenas letras maiúsculas únicas de A a Z são permitidas";
+  String message() default "{letrasPermitidas.message}";
 
   Class<?>[] groups() default {};
 
