@@ -22,26 +22,28 @@ public class ExceptionsHandler {
   @ResponseStatus(BAD_REQUEST)
   public ValidationExceptionResponse methodArgumentNotValidExceptionHandler(
       MethodArgumentNotValidException ex) {
-    var map = new HashMap<String, List<String>>();
+    var erros = new HashMap<String, List<String>>();
 
-    var list1 = new ArrayList<String>();
-    ex.getBindingResult().getGlobalErrors().forEach(e -> list1.add(e.getDefaultMessage()));
-    map.put("Erro na requisição", list1);
+    var listaErrosGlobais = new ArrayList<String>();
+    ex.getBindingResult()
+        .getGlobalErrors()
+        .forEach(e -> listaErrosGlobais.add(e.getDefaultMessage()));
+    erros.put("Erro na requisição", listaErrosGlobais);
 
     ex.getBindingResult()
         .getFieldErrors()
         .forEach(
             erro -> {
-              if (map.containsKey(erro.getField())) {
-                map.get(erro.getField()).add(erro.getDefaultMessage());
+              if (erros.containsKey(erro.getField())) {
+                erros.get(erro.getField()).add(erro.getDefaultMessage());
               } else {
-                var list2 = new ArrayList<String>();
-                list2.add(erro.getDefaultMessage());
-                map.put(erro.getField(), list2);
+                var listaErrosDeCampos = new ArrayList<String>();
+                listaErrosDeCampos.add(erro.getDefaultMessage());
+                erros.put(erro.getField(), listaErrosDeCampos);
               }
             });
 
-    return new ValidationExceptionResponse(map);
+    return new ValidationExceptionResponse(erros);
   }
 
   @ExceptionHandler(ResponseStatusException.class)
