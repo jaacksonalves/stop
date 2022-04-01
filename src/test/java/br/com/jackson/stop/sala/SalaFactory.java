@@ -11,6 +11,7 @@ public class SalaFactory {
   }
 
   public static Sala criaSalaSemSenha() {
-    return new Sala(2, 10, List.of(new Categoria(CATEGORIA_1)), List.of("A", "B"), TempoJogo.MEDIO);
+    return new Sala(
+        4, 10, List.of(new Categoria(CATEGORIA_1)), List.of("A", "B", "C", "D"), TempoJogo.MEDIO);
   }
 }

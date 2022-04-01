@@ -39,7 +39,7 @@ class SalaControllerTest {
     @Test
     @DisplayName("Deve cadastrar uma sala com request válido com senha")
     void teste1() throws Exception {
-      var request = criaNovaSalaRequest("senha", 3, List.of("A", "B", "C"));
+      var request = criaNovaSalaRequest("senha", 4, List.of("A", "B", "C", "D"));
       mockMvc
           .perform(post("/api/salas").contentType(APPLICATION_JSON).content(toJson(request)))
           .andExpect(status().isCreated())
@@ -63,7 +63,7 @@ class SalaControllerTest {
     @Test
     @DisplayName("Deve cadastrar uma sala com request válido sem senha")
     void teste2() throws Exception {
-      var request = criaNovaSalaRequest(null, 3, List.of("A", "B", "C"));
+      var request = criaNovaSalaRequest(null, 4, List.of("A", "B", "C", "D"));
       mockMvc
           .perform(post("/api/salas").contentType(APPLICATION_JSON).content(toJson(request)))
           .andExpect(status().isCreated())
@@ -86,7 +86,7 @@ class SalaControllerTest {
     @Test
     @DisplayName("Não deve cadastrar uma sala com request inválido com menos letras do que rodadas")
     void teste3() throws Exception {
-      var request = criaNovaSalaRequest(null, 4, List.of("A", "B", "C"));
+      var request = criaNovaSalaRequest(null, 5, List.of("A", "B", "C", "D"));
       var response =
           mockMvc
               .perform(post("/api/salas").contentType(APPLICATION_JSON).content(toJson(request)))
@@ -102,7 +102,7 @@ class SalaControllerTest {
           () -> assertTrue(salaRepository.findAll().isEmpty()),
           () ->
               assertEquals(
-                  "A quantidade de letras deve ser maior ou igual ao número de rodadas",
+                  "A quantidade de letras deve ser maior ou igual ao numero de rodadas",
                   resposta.getErros().get("Erro na requisição").iterator().next()),
           () -> assertEquals(1, resposta.getErros().size()),
           () -> assertNotNull(resposta.getOcorridoEm()));
@@ -111,7 +111,7 @@ class SalaControllerTest {
     @Test
     @DisplayName("Não deve cadastrar uma sala com request com menos letras inválidas")
     void teste4() throws Exception {
-      var request = criaNovaSalaRequest(null, 3, List.of("A", "0", "~"));
+      var request = criaNovaSalaRequest(null, 4, List.of("A", "0", "~", "!"));
       var response =
           mockMvc
               .perform(post("/api/salas").contentType(APPLICATION_JSON).content(toJson(request)))
@@ -127,9 +127,9 @@ class SalaControllerTest {
           () -> assertTrue(salaRepository.findAll().isEmpty()),
           () ->
               assertEquals(
-                  "Apenas letras maiúsculas únicas de A a Z são permitidas",
+                  "Apenas letras maiusculas e unicas de A a Z sao permitidas",
                   resposta.getErros().get("letras").iterator().next()),
-          () -> assertEquals(1, resposta.getErros().size()),
+          () -> assertEquals(2, resposta.getErros().size()),
           () -> assertNotNull(resposta.getOcorridoEm()));
     }
   }

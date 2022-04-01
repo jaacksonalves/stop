@@ -25,11 +25,4 @@ public class ValidationExceptionResponse {
     return ocorridoEm;
   }
 
-  @Override
-  public String toString() {
-    return "ValidationExceptionResponse{" +
-            "erros=" + erros +
-            ", ocorridoEm='" + ocorridoEm + '\'' +
-            '}';
-  }
 }

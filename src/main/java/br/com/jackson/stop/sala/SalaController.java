@@ -3,14 +3,14 @@ package br.com.jackson.stop.sala;
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/salas")
@@ -42,5 +42,21 @@ public class SalaController {
             .toUri();
 
     return ResponseEntity.created(locationURI).build();
+  }
+
+  @GetMapping
+  public ResponseEntity<?> buscarDisponiveis() {
+    var salasDisponiveis = salaRepository.findAll().stream().filter(Sala::salaDisponivel).toList();
+    var salasResponses = salasDisponiveis.stream().map(SalasResponse::new).toList();
+    return ResponseEntity.ok(salasResponses);
+  }
+
+  @GetMapping(path = "/{id}")
+  public ResponseEntity<?> buscar(@PathVariable Long id) {
+    var sala =
+        salaRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Sala não encontrada"));
+    return ResponseEntity.ok(new DetalheDaSalaResponse(sala));
   }
 }
