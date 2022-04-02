@@ -9,12 +9,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/salas")
-@ICP(4)
+@ICP(6)
 public class SalaController {
 
   // 2
@@ -45,18 +46,20 @@ public class SalaController {
   }
 
   @GetMapping
-  public ResponseEntity<?> buscarDisponiveis() {
+  public ResponseEntity<List<SalasResponse>> buscarDisponiveis() {
     var salasDisponiveis = salaRepository.findAll().stream().filter(Sala::salaDisponivel).toList();
+    // 1
     var salasResponses = salasDisponiveis.stream().map(SalasResponse::new).toList();
     return ResponseEntity.ok(salasResponses);
   }
 
   @GetMapping(path = "/{id}")
-  public ResponseEntity<?> buscar(@PathVariable Long id) {
+  public ResponseEntity<DetalheDaSalaResponse> buscar(@PathVariable Long id) {
     var sala =
         salaRepository
             .findById(id)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Sala não encontrada"));
+    // 1
     return ResponseEntity.ok(new DetalheDaSalaResponse(sala));
   }
 }

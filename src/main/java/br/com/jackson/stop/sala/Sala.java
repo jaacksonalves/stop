@@ -18,7 +18,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(6.0)
+@ICP(7)
 public class Sala {
 
   // 0.5
@@ -140,6 +140,7 @@ public class Sala {
   }
 
   public boolean salaDisponivel() {
+    //1
     return this.jogadoresAtuais < this.maximoJogadores;
   }
 }
