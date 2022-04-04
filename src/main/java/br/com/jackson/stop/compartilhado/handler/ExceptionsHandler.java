@@ -1,6 +1,9 @@
 package br.com.jackson.stop.compartilhado.handler;
 
+import br.com.jackson.stop.compartilhado.logs.LogBuilder;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +20,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
+
+  private static final Logger log = LoggerFactory.getLogger(ExceptionsHandler.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(BAD_REQUEST)
@@ -66,6 +71,11 @@ public class ExceptionsHandler {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(BAD_REQUEST)
   public ExceptionsHandlerResponse exceptionHandler(Exception ex) {
+
+    LogBuilder.metodo()
+        .oQueEstaAcontecendo("Capturando Exception no handler de Exception genérica")
+        .adicionaInformacao("mensagem: ", ex.getMessage())
+        .erro(log, ex);
 
     return new ExceptionsHandlerResponse(ex.getLocalizedMessage());
   }
