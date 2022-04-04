@@ -14,8 +14,8 @@ import java.util.List;
 @ICP(8.5)
 @LetrasCompativeisRodadas
 public record NovaSalaRequest(//3.5
-        @NotNull @Range(min = 1, max = 12) int rodadas,
-        @NotNull @Range(min = 1, max = 12) int maximoJogadores,
+        @NotNull @Range(min = 4, max = 12) int rodadas,
+        @NotNull @Range(min = 4, max = 12) int maximoJogadores,
         String senha,
         @NotNull @NotEmpty @UniqueElements List<String> categorias,
         @NotNull @NotEmpty @UniqueElements @LetrasPermitidas List< String> letras,
@@ -37,7 +37,7 @@ public record NovaSalaRequest(//3.5
     //1
     var novaSala = new Sala(rodadas, maximoJogadores, listaCategorias, letras, tempoJogo);
     //1
-    if (StringUtils.hasText(senha)) {
+    if (StringUtils.hasText(this.senha)) {
         novaSala.adicionaSenha(this.senha);
     }
     return novaSala;

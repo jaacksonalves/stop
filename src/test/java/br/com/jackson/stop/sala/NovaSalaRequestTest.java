@@ -27,7 +27,7 @@ class NovaSalaRequestTest {
     @Test
     @DisplayName("Deve validar quando a quantidade de letras é igual com as rodadas")
     void teste1() {
-      var request = criaNovaSalaRequest("senha",2, List.of("A", "B"));
+      var request = criaNovaSalaRequest("senha", 2, List.of("A", "B"));
 
       assertTrue(request.letrasCompativeisComRodadas());
     }
@@ -35,7 +35,7 @@ class NovaSalaRequestTest {
     @Test
     @DisplayName("Deve validar quando a quantidade de letras é uma maior que as rodadas")
     void teste2() {
-      var request = criaNovaSalaRequest("senha",2, List.of("A", "B", "C"));
+      var request = criaNovaSalaRequest("senha", 2, List.of("A", "B", "C"));
 
       assertTrue(request.letrasCompativeisComRodadas());
     }
@@ -43,7 +43,7 @@ class NovaSalaRequestTest {
     @Test
     @DisplayName("Não deve validar quando a quantidade de letras é uma menor que as rodadas")
     void teste3() {
-      var request = criaNovaSalaRequest("senha",2, List.of("A"));
+      var request = criaNovaSalaRequest("senha", 2, List.of("A"));
 
       assertFalse(request.letrasCompativeisComRodadas());
     }
@@ -57,7 +57,7 @@ class NovaSalaRequestTest {
     void teste1(
         @ForAll @IntRange(min = 1, max = 11) int rodadas,
         @ForAll @Size(12) @UniqueElements List<@UpperChars @StringLength(1) String> letras) {
-      var request = criaNovaSalaRequest("senha",rodadas, letras);
+      var request = criaNovaSalaRequest("senha", rodadas, letras);
 
       assertTrue(request.letrasCompativeisComRodadas());
     }
@@ -67,7 +67,7 @@ class NovaSalaRequestTest {
     void teste2(
         @ForAll @IntRange(min = 2, max = 12) int rodadas,
         @ForAll @Size(1) @UniqueElements List<@UpperChars @StringLength(1) String> letras) {
-      var request = criaNovaSalaRequest("senha",rodadas, letras);
+      var request = criaNovaSalaRequest("senha", rodadas, letras);
 
       assertFalse(request.letrasCompativeisComRodadas());
     }
@@ -84,7 +84,7 @@ class NovaSalaRequestTest {
       when(categoriaRepositoryMock.existsByNome(CATEGORIA_1)).thenReturn(false);
       when(categoriaRepositoryMock.save(categoria)).thenReturn(categoria);
 
-      var request = criaNovaSalaRequest("senha", 2, List.of("A", "B"));
+      var request = criaNovaSalaRequest("senha", 4, List.of("A", "B", "C", "D"));
 
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(
@@ -105,7 +105,7 @@ class NovaSalaRequestTest {
       when(categoriaRepositoryMock.existsByNome(CATEGORIA_1)).thenReturn(false);
       when(categoriaRepositoryMock.save(categoria)).thenReturn(categoria);
 
-      var request = criaNovaSalaRequest(null, 2, List.of("A", "B"));
+      var request = criaNovaSalaRequest(null, 4, List.of("A", "B", "C", "D"));
 
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(
@@ -125,7 +125,7 @@ class NovaSalaRequestTest {
       when(categoriaRepositoryMock.existsByNome(CATEGORIA_1)).thenReturn(true);
       when(categoriaRepositoryMock.findByNome(CATEGORIA_1)).thenReturn(Optional.of(categoria));
 
-      var request = criaNovaSalaRequest("senha", 2, List.of("A", "B"));
+      var request = criaNovaSalaRequest("senha", 4, List.of("A", "B", "C", "D"));
 
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(

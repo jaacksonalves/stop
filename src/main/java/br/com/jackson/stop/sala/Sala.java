@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(6.0)
+@ICP(7)
 public class Sala {
 
   // 0.5
@@ -35,6 +36,9 @@ public class Sala {
   @Column(nullable = false)
   @Range(min = 1, max = 12)
   private int maximoJogadores;
+
+  @Max(12)
+  private Integer jogadoresAtuais = 0;
 
   // 0.5
   private String senha;
@@ -65,15 +69,15 @@ public class Sala {
   public Sala() {}
 
   public Sala(
-      @NotNull @Range(min = 1, max = 12) int rodadas,
-      @NotNull @Range(min = 1, max = 12) int maximoJogadores,
+      @NotNull @Range(min = 4, max = 12) int rodadas,
+      @NotNull @Range(min = 4, max = 12) int maximoJogadores,
       @NotNull @NotEmpty @UniqueElements List<Categoria> categorias,
       @NotNull @NotEmpty @LetrasPermitidas @UniqueElements List<String> letras,
       @NotNull TempoJogo tempoJogo) {
-    Assert.state(rodadas >= 1 && rodadas <= 12, "Rodadas devem estar entre 1 e 12");
+    Assert.state(rodadas >= 4 && rodadas <= 12, "Rodadas devem estar entre 4 e 12");
     Assert.state(
-        maximoJogadores >= 1 && maximoJogadores <= 12,
-        "Maximo de jogadores devem estar entre 1 e 12");
+        maximoJogadores >= 4 && maximoJogadores <= 12,
+        "Maximo de jogadores devem estar entre 4 e 12");
     Assert.notNull(categorias, "Categorias não pode ser nula");
     Assert.state(!categorias.isEmpty(), "Categorias não pode ser nula");
     Assert.notNull(letras, "Letras não pode ser nula");
@@ -122,12 +126,21 @@ public class Sala {
     return id;
   }
 
+  public Integer getJogadoresAtuais() {
+    return jogadoresAtuais;
+  }
+
   // quando uma senha é setada, automaticamente a sala fica privada
   public void adicionaSenha(String senha) {
-    Assert.state(this.senha != null, "Sala já possui senha cadastrada");
+    Assert.state(this.senha == null, "Sala já possui senha cadastrada");
     Assert.state(StringUtils.hasText(senha), "Senha não pode ser nula ou vazia");
 
     this.senha = senha;
     this.privada = true;
+  }
+
+  public boolean salaDisponivel() {
+    // 1
+    return this.jogadoresAtuais < this.maximoJogadores;
   }
 }
