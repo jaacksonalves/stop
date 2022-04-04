@@ -74,10 +74,10 @@ public class Sala {
       @NotNull @NotEmpty @UniqueElements List<Categoria> categorias,
       @NotNull @NotEmpty @LetrasPermitidas @UniqueElements List<String> letras,
       @NotNull TempoJogo tempoJogo) {
-    Assert.state(rodadas >= 4 && rodadas <= 12, "Rodadas devem estar entre 1 e 12");
+    Assert.state(rodadas >= 4 && rodadas <= 12, "Rodadas devem estar entre 4 e 12");
     Assert.state(
         maximoJogadores >= 4 && maximoJogadores <= 12,
-        "Maximo de jogadores devem estar entre 1 e 12");
+        "Maximo de jogadores devem estar entre 4 e 12");
     Assert.notNull(categorias, "Categorias não pode ser nula");
     Assert.state(!categorias.isEmpty(), "Categorias não pode ser nula");
     Assert.notNull(letras, "Letras não pode ser nula");
@@ -140,7 +140,7 @@ public class Sala {
   }
 
   public boolean salaDisponivel() {
-    //1
+    // 1
     return this.jogadoresAtuais < this.maximoJogadores;
   }
 }

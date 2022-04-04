@@ -4,12 +4,12 @@ import java.util.List;
 
 public class DetalheDaSalaResponse {
   private final TempoJogo tempoJogo;
-  private final List<CategoriasResponse> categorias;
+  private final List<CategoriaResponse> categorias;
   private final List<String> letras;
 
   public DetalheDaSalaResponse(Sala sala) {
     this.tempoJogo = sala.getTempoJogo();
-    this.categorias = sala.getCategorias().stream().map(CategoriasResponse::new).toList();
+    this.categorias = sala.getCategorias().stream().map(CategoriaResponse::new).toList();
     this.letras = sala.getLetras();
   }
 
@@ -17,7 +17,7 @@ public class DetalheDaSalaResponse {
     return tempoJogo;
   }
 
-  public List<CategoriasResponse> getCategorias() {
+  public List<CategoriaResponse> getCategorias() {
     return categorias;
   }
 

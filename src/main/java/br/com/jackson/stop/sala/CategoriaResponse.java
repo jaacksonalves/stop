@@ -1,9 +1,9 @@
 package br.com.jackson.stop.sala;
 
-public class CategoriasResponse {
+public class CategoriaResponse {
   private final String nomeCategoria;
 
-  public CategoriasResponse(Categoria categoria) {
+  public CategoriaResponse(Categoria categoria) {
     this.nomeCategoria = categoria.getNome();
   }
 
