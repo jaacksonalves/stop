@@ -2,18 +2,22 @@ package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import br.com.jackson.stop.jogo.EntrarNoJogoRequest;
+import br.com.jackson.stop.usuario.Usuario;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -37,14 +41,11 @@ public class Sala {
   @Range(min = 1, max = 12)
   private int maximoJogadores;
 
-  @Max(12)
-  private Integer jogadoresAtuais = 0;
-
   // 0.5
   private String senha;
 
   // 1
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(cascade = {PERSIST, MERGE})
   private final List<Categoria> categorias = new ArrayList<>();
 
   // 0.5
@@ -56,11 +57,20 @@ public class Sala {
 
   // 1
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private TempoJogo tempoJogo;
 
   // 0.5
   @Column(nullable = false)
   private boolean privada = false;
+
+  @OneToMany(
+      mappedBy = "sala",
+      cascade = {MERGE, PERSIST})
+  @Size(max = 12)
+  private final List<Usuario> usuarios = new ArrayList<>();
+
+  @Version private Integer versao;
 
   /**
    * @deprecated (hibernate only)
@@ -126,8 +136,8 @@ public class Sala {
     return id;
   }
 
-  public Integer getJogadoresAtuais() {
-    return jogadoresAtuais;
+  public List<Usuario> getUsuarios() {
+    return usuarios;
   }
 
   // quando uma senha é setada, automaticamente a sala fica privada
@@ -141,6 +151,21 @@ public class Sala {
 
   public boolean salaDisponivel() {
     // 1
-    return this.jogadoresAtuais < this.maximoJogadores;
+    return this.usuarios.size() < this.maximoJogadores;
+  }
+
+  public boolean validaEntrada(EntrarNoJogoRequest request) {
+    Assert.notNull(request, "Request não pode ser nulo");
+    Assert.state(this.salaDisponivel(), "Sala está cheia");
+
+    return !this.privada || this.senha.equals(request.senha());
+  }
+
+  public void adicionarUsuario(Usuario usuario) {
+    Assert.state(this.salaDisponivel(), "Sala está cheia");
+    Assert.state(usuario.getSala() == null, "Usuario já está em uma sala");
+
+    this.usuarios.add(usuario);
+    usuario.adicionaSala(this);
   }
 }

@@ -1,11 +1,11 @@
 package br.com.jackson.stop.sala;
 
+import br.com.jackson.stop.usuario.Usuario;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static br.com.jackson.stop.sala.SalaFactory.criaSalaComSenha;
-import static br.com.jackson.stop.sala.SalaFactory.criaSalaSemSenha;
+import static br.com.jackson.stop.sala.SalaFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -48,7 +48,14 @@ class SalaTest {
     @DisplayName("Deve retornar false se a sala com senha estiver ocupada")
     void teste3() {
       var sala = criaSalaComSenha();
-      setField(sala, "jogadoresAtuais", sala.getMaximoJogadores());
+      var usuario1 = criaUsuario();
+      var usuario2 = criaUsuario();
+      var usuario3 = criaUsuario();
+      var usuario4 = criaUsuario();
+      sala.adicionarUsuario(usuario1);
+      sala.adicionarUsuario(usuario2);
+      sala.adicionarUsuario(usuario3);
+      sala.adicionarUsuario(usuario4);
 
       assertFalse(sala.salaDisponivel());
     }
@@ -57,7 +64,14 @@ class SalaTest {
     @DisplayName("Deve retornar false se a sala sem senha estiver ocupada")
     void teste4() {
       var sala = criaSalaSemSenha();
-      setField(sala, "jogadoresAtuais", sala.getMaximoJogadores());
+      var usuario1 = criaUsuario();
+      var usuario2 = criaUsuario();
+      var usuario3 = criaUsuario();
+      var usuario4 = criaUsuario();
+      sala.adicionarUsuario(usuario1);
+      sala.adicionarUsuario(usuario2);
+      sala.adicionarUsuario(usuario3);
+      sala.adicionarUsuario(usuario4);
 
       assertFalse(sala.salaDisponivel());
     }

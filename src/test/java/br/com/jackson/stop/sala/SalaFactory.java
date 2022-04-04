@@ -1,5 +1,7 @@
 package br.com.jackson.stop.sala;
 
+import br.com.jackson.stop.usuario.Usuario;
+
 import java.util.List;
 
 public class SalaFactory {
@@ -13,18 +15,22 @@ public class SalaFactory {
 
   public static Sala criaSalaSemSenha() {
     return new Sala(
-        4, 10, List.of(new Categoria(CATEGORIA_1)), List.of("A", "B", "C", "D"), TempoJogo.MEDIO);
+        4, 4, List.of(new Categoria(CATEGORIA_1)), List.of("A", "B", "C", "D"), TempoJogo.MEDIO);
   }
 
   public static Sala criaSalaComSenha() {
     var sala =
         new Sala(
             4,
-            10,
+            4,
             List.of(new Categoria(CATEGORIA_2)),
             List.of("A", "B", "C", "D"),
             TempoJogo.MEDIO);
     sala.adicionaSenha("senha");
     return sala;
+  }
+
+  public static Usuario criaUsuario() {
+    return new Usuario("usuario");
   }
 }
