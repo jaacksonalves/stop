@@ -1,5 +1,6 @@
 package br.com.jackson.stop.sala;
 
+import br.com.jackson.stop.jogo.EntrarNoJogoRequest;
 import br.com.jackson.stop.usuario.Usuario;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 public class SalaFactory {
   public static final String CATEGORIA_1 = "Categoria 1";
   public static final String CATEGORIA_2 = "Categoria 2";
+  public static final String CATEGORIA_3 = "Categoria 3";
 
   public static NovaSalaRequest criaNovaSalaRequest(
       String senha, int rodadas, List<String> letras) {
@@ -30,7 +32,23 @@ public class SalaFactory {
     return sala;
   }
 
+  public static Sala criaSalaComSenha2() {
+    var sala =
+        new Sala(
+            4,
+            4,
+            List.of(new Categoria(CATEGORIA_3)),
+            List.of("A", "B", "C", "D"),
+            TempoJogo.MEDIO);
+    sala.adicionaSenha("senha");
+    return sala;
+  }
+
   public static Usuario criaUsuario() {
     return new Usuario("usuario");
+  }
+
+  public static EntrarNoJogoRequest criaEntrarNoJogoRequest(String senha) {
+    return new EntrarNoJogoRequest("nome", senha);
   }
 }

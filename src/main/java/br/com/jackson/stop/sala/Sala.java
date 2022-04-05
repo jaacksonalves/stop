@@ -22,7 +22,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(7)
+@ICP(9)
 public class Sala {
 
   // 0.5
@@ -30,46 +30,41 @@ public class Sala {
   @GeneratedValue(strategy = IDENTITY)
   @Column(nullable = false)
   private Long id;
-
   // 0.5
   @Column(nullable = false)
   @Range(min = 1, max = 12)
   private int rodadas;
-
   // 0.5
   @Column(nullable = false)
   @Range(min = 1, max = 12)
   private int maximoJogadores;
-
   // 0.5
   private String senha;
-
-  // 1
-  @ManyToMany(cascade = {PERSIST, MERGE})
-  private final List<Categoria> categorias = new ArrayList<>();
-
   // 0.5
   @Column(nullable = false)
   @ElementCollection
   @LetrasPermitidas
   @UniqueElements
   private List<String> letras;
-
   // 1
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private TempoJogo tempoJogo;
-
   // 0.5
   @Column(nullable = false)
   private boolean privada = false;
 
+  // 1
+  @ManyToMany(cascade = {PERSIST, MERGE})
+  private final List<Categoria> categorias = new ArrayList<>();
+
+  // 1
   @OneToMany(
       mappedBy = "sala",
       cascade = {MERGE, PERSIST})
   @Size(max = 12)
   private final List<Usuario> usuarios = new ArrayList<>();
-
+  // 0.5
   @Version private Integer versao;
 
   /**
@@ -149,20 +144,20 @@ public class Sala {
     this.privada = true;
   }
 
-  public boolean salaDisponivel() {
+  public boolean salaComVagaDisponivel() {
     // 1
     return this.usuarios.size() < this.maximoJogadores;
   }
 
   public boolean validaEntrada(EntrarNoJogoRequest request) {
     Assert.notNull(request, "Request não pode ser nulo");
-    Assert.state(this.salaDisponivel(), "Sala está cheia");
-
+    Assert.state(this.salaComVagaDisponivel(), "Sala está cheia");
+    // 2
     return !this.privada || this.senha.equals(request.senha());
   }
 
   public void adicionarUsuario(Usuario usuario) {
-    Assert.state(this.salaDisponivel(), "Sala está cheia");
+    Assert.state(this.salaComVagaDisponivel(), "Sala está cheia");
     Assert.state(usuario.getSala() == null, "Usuario já está em uma sala");
 
     this.usuarios.add(usuario);

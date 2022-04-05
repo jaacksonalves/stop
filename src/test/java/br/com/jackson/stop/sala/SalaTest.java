@@ -1,13 +1,11 @@
 package br.com.jackson.stop.sala;
 
-import br.com.jackson.stop.usuario.Usuario;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static br.com.jackson.stop.sala.SalaFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 class SalaTest {
 
@@ -33,7 +31,7 @@ class SalaTest {
     void teste1() {
       var sala = criaSalaSemSenha();
 
-      assertTrue(sala.salaDisponivel());
+      assertTrue(sala.salaComVagaDisponivel());
     }
 
     @Test
@@ -41,7 +39,7 @@ class SalaTest {
     void teste2() {
       var sala = criaSalaComSenha();
 
-      assertTrue(sala.salaDisponivel());
+      assertTrue(sala.salaComVagaDisponivel());
     }
 
     @Test
@@ -57,7 +55,7 @@ class SalaTest {
       sala.adicionarUsuario(usuario3);
       sala.adicionarUsuario(usuario4);
 
-      assertFalse(sala.salaDisponivel());
+      assertFalse(sala.salaComVagaDisponivel());
     }
 
     @Test
@@ -73,7 +71,51 @@ class SalaTest {
       sala.adicionarUsuario(usuario3);
       sala.adicionarUsuario(usuario4);
 
-      assertFalse(sala.salaDisponivel());
+      assertFalse(sala.salaComVagaDisponivel());
+    }
+  }
+
+  @Nested
+  class MetodoValidaEntradaTest {
+    @Test
+    @DisplayName("Deve validar entrada caso sala não seja privada")
+    void teste1() {
+      var sala = criaSalaSemSenha();
+      var request = criaEntrarNoJogoRequest(null);
+
+      assertTrue(sala.validaEntrada(request));
+    }
+
+    @Test
+    @DisplayName("Deve validar entrada caso sala seja privada e senha seja correta")
+    void teste2() {
+      var sala = criaSalaComSenha();
+      var request = criaEntrarNoJogoRequest("senha");
+
+      assertTrue(sala.validaEntrada(request));
+    }
+
+    @Test
+    @DisplayName("Não deve validar entrada caso sala seja privada e senha seja incorreta")
+    void teste3() {
+      var sala = criaSalaComSenha();
+      var request = criaEntrarNoJogoRequest("senhaIncorreta");
+
+      assertFalse(sala.validaEntrada(request));
+    }
+  }
+
+  @Nested
+  class MetodoaAdicionarUsuarioTest {
+    @Test
+    @DisplayName("Deve adicionar usuario a sala")
+    void teste1() {
+      var sala = criaSalaSemSenha();
+      var usuario = criaUsuario();
+      sala.adicionarUsuario(usuario);
+
+      assertEquals(usuario, sala.getUsuarios().iterator().next());
+      assertEquals(sala, usuario.getSala());
     }
   }
 }

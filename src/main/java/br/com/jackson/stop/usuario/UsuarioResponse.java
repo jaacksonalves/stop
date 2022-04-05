@@ -3,18 +3,18 @@ package br.com.jackson.stop.usuario;
 public class UsuarioResponse {
 
   private final String nome;
-  private final int nota;
+  private final Integer nota;
 
   public UsuarioResponse(Usuario usuario) {
     this.nome = usuario.getNome();
     this.nota = usuario.getNota();
   }
 
-    public String getNome() {
-        return nome;
-    }
+  public String getNome() {
+    return nome;
+  }
 
-    public int getNota() {
-        return nota;
-    }
+  public Integer getNota() {
+    return nota;
+  }
 }

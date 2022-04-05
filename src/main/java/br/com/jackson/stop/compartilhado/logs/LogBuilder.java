@@ -13,6 +13,35 @@ public class LogBuilder {
     throw new IllegalStateException("Classe de utilidade");
   }
 
+  /**
+   * O método tenta responder o Where do 5ws
+   *
+   * @param metodo texto indicando qual o método que está sendo executado naquel momento
+   * @return
+   */
+  public static Metodo metodo(String metodo) {
+    return new Metodo(metodo);
+  }
+
+  /**
+   * O método tenta responder o Where do 5ws
+   *
+   * <p>Encontra o método que originou a chamada do log automaticamente. Acho que vale a pena deixar
+   * claro que atualmente acessamos a Thread corrente e inspecionamos a stack trace(sei que é
+   * detalhe de implementaçao, mas achei importante).
+   *
+   * @return
+   */
+  public static Metodo metodo() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    /*
+     * Explicação do numero 2: A posicao zero é a chamada do getStackTrace,
+     * a posicao um é a invocação do próprio metodo(). Aí a dois fica
+     * sendo o ponto de origem.
+     */
+    return new Metodo(stackTrace[2].getMethodName());
+  }
+
   public static class ProntoParaLogar {
 
     private final Map<String, String> parametros = new LinkedHashMap<>();
@@ -128,7 +157,7 @@ public class LogBuilder {
 
   public static class Metodo {
 
-    private String metodo;
+    private final String metodo;
 
     public Metodo(String metodo) {
       Assert.hasText(metodo, "O método não pode ser vazio");
@@ -145,34 +174,5 @@ public class LogBuilder {
       Assert.hasText(oQueEstaAcontecendo, "O momento não pode ser vazio");
       return new OQueEstaAcontecendo(metodo, oQueEstaAcontecendo);
     }
-  }
-
-  /**
-   * O método tenta responder o Where do 5ws
-   *
-   * @param metodo texto indicando qual o método que está sendo executado naquel momento
-   * @return
-   */
-  public static Metodo metodo(String metodo) {
-    return new Metodo(metodo);
-  }
-
-  /**
-   * O método tenta responder o Where do 5ws
-   *
-   * <p>Encontra o método que originou a chamada do log automaticamente. Acho que vale a pena deixar
-   * claro que atualmente acessamos a Thread corrente e inspecionamos a stack trace(sei que é
-   * detalhe de implementaçao, mas achei importante).
-   *
-   * @return
-   */
-  public static Metodo metodo() {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    /*
-     * Explicação do numero 2: A posicao zero é a chamada do getStackTrace,
-     * a posicao um é a invocação do próprio metodo(). Aí a dois fica
-     * sendo o ponto de origem.
-     */
-    return new Metodo(stackTrace[2].getMethodName());
   }
 }

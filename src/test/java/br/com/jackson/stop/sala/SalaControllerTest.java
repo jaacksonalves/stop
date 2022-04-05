@@ -34,6 +34,14 @@ class SalaControllerTest {
   @Autowired private ObjectMapper mapper;
   @Autowired private SalaRepository salaRepository;
 
+  private String toJson(NovaSalaRequest request) throws JsonProcessingException {
+    return mapper.writeValueAsString(request);
+  }
+
+  private Object fromJson(String response, Class<?> classe) throws JsonProcessingException {
+    return mapper.readValue(response, classe);
+  }
+
   @Nested
   class MetodoCadastrarTest {
 
@@ -236,13 +244,5 @@ class SalaControllerTest {
           () -> assertEquals("Sala não encontrada", resposta.getMensagem()),
           () -> assertNotNull(resposta.getOcorridoEm()));
     }
-  }
-
-  private String toJson(NovaSalaRequest request) throws JsonProcessingException {
-    return mapper.writeValueAsString(request);
-  }
-
-  private Object fromJson(String response, Class<?> classe) throws JsonProcessingException {
-    return mapper.readValue(response, classe);
   }
 }

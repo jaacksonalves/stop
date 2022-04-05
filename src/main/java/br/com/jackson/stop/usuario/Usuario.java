@@ -17,7 +17,7 @@ public class Usuario {
 
   private String nome;
 
-  private int nota;
+  private Integer nota;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Sala sala;
@@ -40,7 +40,7 @@ public class Usuario {
     return sala;
   }
 
-  public int getNota() {
+  public Integer getNota() {
     return nota;
   }
 

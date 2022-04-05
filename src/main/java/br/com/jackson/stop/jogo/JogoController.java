@@ -1,5 +1,6 @@
 package br.com.jackson.stop.jogo;
 
+import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.sala.Sala;
 import br.com.jackson.stop.sala.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/jogo")
+@ICP(7)
 public class JogoController {
 
+  // 1
   private final SalaRepository salaRepository;
 
   @Autowired
@@ -28,22 +31,23 @@ public class JogoController {
   // usuário e temos um json no corpo
   @GetMapping
   @Transactional
-  public DetalhesDaSalaEmJogoResponse jogoAleatorio(
+  public DetalhesDaSalaEmJogoResponse jogoAleatorio( // 1
       @Valid @RequestBody EntrarNoJogoRequest request) {
-    var salasDisponiveis = salaRepository.findAll().stream().filter(Sala::salaDisponivel).toList();
-    if (salasDisponiveis.isEmpty()) {
-      throw new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis");
-    }
+    var salaDisponivel =
+        salaRepository.findAll().stream()
+            .filter(sala -> sala.salaComVagaDisponivel() && !sala.isPrivada())
+            .findFirst()
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis"));
 
-    var sala = salasDisponiveis.iterator().next();
+    validaEntradaNaSala(request, salaDisponivel);
 
-    validaEntradaNaSala(request, sala);
-
+    // 1
     var usuario = request.toUsuario();
 
-    sala.adicionarUsuario(usuario);
+    salaDisponivel.adicionarUsuario(usuario);
 
-    return new DetalhesDaSalaEmJogoResponse(sala);
+    // 1
+    return new DetalhesDaSalaEmJogoResponse(salaDisponivel);
   }
 
   @GetMapping("/{salaId}")
@@ -68,6 +72,7 @@ public class JogoController {
     Assert.notNull(request, "Entrada não pode ser nula");
     Assert.notNull(sala, "Sala não pode ser nula");
 
+    // 1
     if (!sala.validaEntrada(request)) {
       throw new ResponseStatusException(
           BAD_REQUEST, "Não é possível entrar na sala, verifique a senha");
