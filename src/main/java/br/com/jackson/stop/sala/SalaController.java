@@ -48,7 +48,7 @@ public class SalaController {
   @GetMapping
   public ResponseEntity<List<SalasResponse>> buscarDisponiveis() {
     var salasDisponiveis =
-        salaRepository.findAll().stream().filter(Sala::salaComVagaDisponivel).toList();
+        salaRepository.findAll().stream().filter(Sala::temVaga).toList();
     // 1
     var salasResponses = salasDisponiveis.stream().map(SalasResponse::new).toList();
     return ResponseEntity.ok(salasResponses);

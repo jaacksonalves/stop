@@ -7,7 +7,7 @@ public class GeraJson {
 
   private static final ObjectMapper mapper = new ObjectMapper();
 
-  public GeraJson() {
+  private GeraJson() {
     throw new IllegalStateException("Classe de utilidade");
   }
 

@@ -49,6 +49,6 @@ public class SalaFactory {
   }
 
   public static EntrarNoJogoRequest criaEntrarNoJogoRequest(String senha) {
-    return new EntrarNoJogoRequest("nome", senha);
+    return new EntrarNoJogoRequest("nome", senha, null);
   }
 }

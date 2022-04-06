@@ -31,7 +31,7 @@ class SalaTest {
     void teste1() {
       var sala = criaSalaSemSenha();
 
-      assertTrue(sala.salaComVagaDisponivel());
+      assertTrue(sala.temVaga());
     }
 
     @Test
@@ -39,7 +39,7 @@ class SalaTest {
     void teste2() {
       var sala = criaSalaComSenha();
 
-      assertTrue(sala.salaComVagaDisponivel());
+      assertTrue(sala.temVaga());
     }
 
     @Test
@@ -55,7 +55,7 @@ class SalaTest {
       sala.adicionarUsuario(usuario3);
       sala.adicionarUsuario(usuario4);
 
-      assertFalse(sala.salaComVagaDisponivel());
+      assertFalse(sala.temVaga());
     }
 
     @Test
@@ -71,7 +71,7 @@ class SalaTest {
       sala.adicionarUsuario(usuario3);
       sala.adicionarUsuario(usuario4);
 
-      assertFalse(sala.salaComVagaDisponivel());
+      assertFalse(sala.temVaga());
     }
   }
 
@@ -83,7 +83,7 @@ class SalaTest {
       var sala = criaSalaSemSenha();
       var request = criaEntrarNoJogoRequest(null);
 
-      assertTrue(sala.validaEntrada(request));
+      assertTrue(sala.validaEntrada(request.senha()));
     }
 
     @Test
@@ -92,7 +92,7 @@ class SalaTest {
       var sala = criaSalaComSenha();
       var request = criaEntrarNoJogoRequest("senha");
 
-      assertTrue(sala.validaEntrada(request));
+      assertTrue(sala.validaEntrada(request.senha()));
     }
 
     @Test
@@ -101,7 +101,7 @@ class SalaTest {
       var sala = criaSalaComSenha();
       var request = criaEntrarNoJogoRequest("senhaIncorreta");
 
-      assertFalse(sala.validaEntrada(request));
+      assertFalse(sala.validaEntrada(request.senha()));
     }
   }
 

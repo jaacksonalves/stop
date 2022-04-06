@@ -20,7 +20,7 @@ import static br.com.jackson.stop.sala.SalaFactory.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,11 +45,11 @@ class JogoControllerTest {
       var sala2 = criaSalaComSenha();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
           .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.nomeJogador()))
           .andExpect(jsonPath("letras[0]").value(sala1.getLetras().get(0)))
@@ -75,11 +75,11 @@ class JogoControllerTest {
       var sala2 = criaSalaComSenha2();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isNotFound());
 
       var usuarios = usuarioRepository.findAll();
@@ -91,11 +91,11 @@ class JogoControllerTest {
     @DisplayName("Não deve retornar sala aleatória não existem salas disponíveis")
     void teste3() throws Exception {
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isNotFound())
           .andExpect(jsonPath("mensagem").value("Não há salas disponíveis"))
           .andExpect(jsonPath("ocorridoEm").exists());
@@ -112,11 +112,11 @@ class JogoControllerTest {
       var sala2 = criaSalaComSenha2();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.erros.nomeJogador").value("não deve estar em branco"))
           .andExpect(jsonPath("$.ocorridoEm").exists());
@@ -136,11 +136,11 @@ class JogoControllerTest {
       var sala = criaSalaSemSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
           .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.nomeJogador()))
           .andExpect(jsonPath("letras[0]").value(sala.getLetras().get(0)))
@@ -164,11 +164,11 @@ class JogoControllerTest {
       var sala = SalaFactory.criaSalaComSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", "senha");
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", "senha", null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
           .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.nomeJogador()))
           .andExpect(jsonPath("letras[0]").value(sala.getLetras().get(0)))
@@ -192,11 +192,11 @@ class JogoControllerTest {
       var sala = SalaFactory.criaSalaComSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", "senhaIncorreta");
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", "senhaIncorreta", null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isBadRequest())
           .andExpect(
               jsonPath("$.mensagem").value("Não é possível entrar na sala, verifique a senha"))
@@ -211,11 +211,11 @@ class JogoControllerTest {
     @DisplayName("Não deve retornar sala específica, quando a sala não existe, status 404")
     void teste4() throws Exception {
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo/" + 1).contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo/" + 1).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isNotFound())
           .andExpect(jsonPath("mensagem").value("Sala não encontrada"))
           .andExpect(jsonPath("ocorridoEm").exists());
@@ -231,11 +231,11 @@ class JogoControllerTest {
       var sala1 = criaSalaSemSenha();
       salaRepository.save(sala1);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("", null);
+      var entrarNoJogoRequest = new EntrarNoJogoRequest("", null, null);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
-          .perform(get("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.erros.nomeJogador").value("não deve estar em branco"))
           .andExpect(jsonPath("$.ocorridoEm").exists());

@@ -2,7 +2,6 @@ package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
-import br.com.jackson.stop.jogo.EntrarNoJogoRequest;
 import br.com.jackson.stop.usuario.Usuario;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -144,23 +143,29 @@ public class Sala {
     this.privada = true;
   }
 
-  public boolean salaComVagaDisponivel() {
+  public boolean temVaga() {
     // 1
     return this.usuarios.size() < this.maximoJogadores;
   }
 
-  public boolean validaEntrada(EntrarNoJogoRequest request) {
-    Assert.notNull(request, "Request não pode ser nulo");
-    Assert.state(this.salaComVagaDisponivel(), "Sala está cheia");
+  public boolean validaEntrada(String senha) {
+    Assert.state(StringUtils.hasText(senha), "Senha não pode ser nula ou vazia");
+    Assert.state(this.temVaga(), "Sala está cheia");
     // 2
-    return !this.privada || this.senha.equals(request.senha());
+    return !this.privada || this.senha.equals(senha);
   }
 
   public void adicionarUsuario(Usuario usuario) {
-    Assert.state(this.salaComVagaDisponivel(), "Sala está cheia");
-    Assert.state(usuario.getSala() == null, "Usuario já está em uma sala");
+    Assert.state(this.temVaga(), "Sala está cheia");
+    Assert.state(usuario.podeJogar(), "Usuario já está em uma sala");
 
     this.usuarios.add(usuario);
     usuario.adicionaSala(this);
+  }
+
+  /** verifica se a sala não é privada e se ainda tem espaço para entrar mais usuários */
+  public boolean salaLivreEComVagaDisponivel() {
+    // 2
+    return !this.privada && this.temVaga();
   }
 }

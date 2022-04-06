@@ -46,8 +46,12 @@ public class Usuario {
 
   public void adicionaSala(Sala sala) {
     Assert.notNull(sala, "Sala não pode ser nula");
-    Assert.state(this.sala == null, "Usuário já está em uma sala");
+    Assert.state(this.podeJogar(), "Usuário já está em uma sala");
 
     this.sala = sala;
+  }
+
+  public boolean podeJogar() {
+    return this.sala == null;
   }
 }
