@@ -149,7 +149,6 @@ public class Sala {
   }
 
   public boolean validaEntrada(String senha) {
-    Assert.state(StringUtils.hasText(senha), "Senha não pode ser nula ou vazia");
     Assert.state(this.temVaga(), "Sala está cheia");
     // 2
     return !this.privada || this.senha.equals(senha);
