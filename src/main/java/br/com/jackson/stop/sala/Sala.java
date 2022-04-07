@@ -167,4 +167,8 @@ public class Sala {
     // 2
     return !this.privada && this.temVaga();
   }
+
+  public int getJogadoresAtuais() {
+    return this.usuarios.size();
+  }
 }

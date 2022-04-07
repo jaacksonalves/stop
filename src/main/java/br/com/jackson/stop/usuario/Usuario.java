@@ -47,6 +47,7 @@ public class Usuario {
   public void adicionaSala(Sala sala) {
     Assert.notNull(sala, "Sala não pode ser nula");
     Assert.state(this.podeJogar(), "Usuário já está em uma sala");
+    Assert.state(sala.temVaga(), "Sala está lotada");
 
     this.sala = sala;
   }

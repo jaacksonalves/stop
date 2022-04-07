@@ -12,7 +12,7 @@ public class SalasResponse {
   public SalasResponse(Sala sala) {
     this.id = sala.getId();
     this.numeroMaximoParticipantes = sala.getMaximoJogadores();
-    this.numeroParticipantesAtual = sala.getUsuarios().size();
+    this.numeroParticipantesAtual = sala.getJogadoresAtuais();
     this.quantidadeCategorias = sala.getCategorias().size();
     this.quantidadeRodadas = sala.getRodadas();
     this.privada = sala.isPrivada();
