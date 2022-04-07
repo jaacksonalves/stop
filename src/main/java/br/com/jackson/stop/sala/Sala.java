@@ -158,8 +158,8 @@ public class Sala {
     Assert.state(this.temVaga(), "Sala está cheia");
     Assert.state(usuario.podeJogar(), "Usuario já está em uma sala");
 
-    this.usuarios.add(usuario);
     usuario.adicionaSala(this);
+    this.usuarios.add(usuario);
   }
 
   /** verifica se a sala não é privada e se ainda tem espaço para entrar mais usuários */
