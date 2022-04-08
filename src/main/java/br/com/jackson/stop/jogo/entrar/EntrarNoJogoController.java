@@ -10,15 +10,18 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/jogo")
-@ICP(6)
+@ICP(7)
 public class EntrarNoJogoController {
 
-  // 1
-  private final EntrarNoJogoService entrarNoJogoService;
+  // 2
+  private final EntrarNoJogoSalaService salaService;
+  private final EntrarNoJogoUsuarioService usuarioService;
 
   @Autowired
-  public EntrarNoJogoController(EntrarNoJogoService entrarNoJogoService) {
-    this.entrarNoJogoService = entrarNoJogoService;
+  public EntrarNoJogoController(
+      EntrarNoJogoSalaService salaService, EntrarNoJogoUsuarioService usuarioService) {
+    this.salaService = salaService;
+    this.usuarioService = usuarioService;
   }
 
   // 1
@@ -27,10 +30,10 @@ public class EntrarNoJogoController {
   public DetalhesDaSalaEmJogoResponse jogoAleatorio(
       @Valid @RequestBody EntrarNoJogoRequest request) {
     // 1
-    var salaDisponivel = entrarNoJogoService.buscaSalaAleatoria();
+    var salaDisponivel = salaService.buscaSalaAleatoria();
 
     // 1
-    var usuario = entrarNoJogoService.getUsuario(request);
+    var usuario = usuarioService.getUsuario(request);
 
     salaDisponivel.adicionarUsuario(usuario);
 
@@ -43,9 +46,9 @@ public class EntrarNoJogoController {
   @Transactional
   public DetalhesDaSalaEmJogoResponse jogoEspecifico(
       @PathVariable Long salaId, @Valid @RequestBody EntrarNoJogoRequest request) {
-    var sala = entrarNoJogoService.buscaSalaEspecifica(salaId, request);
+    var sala = salaService.buscaSalaEspecifica(salaId, request);
 
-    var usuario = entrarNoJogoService.getUsuario(request);
+    var usuario = usuarioService.getUsuario(request);
 
     sala.adicionarUsuario(usuario);
 

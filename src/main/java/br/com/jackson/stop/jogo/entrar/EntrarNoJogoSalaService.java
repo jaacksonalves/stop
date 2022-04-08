@@ -3,8 +3,6 @@ package br.com.jackson.stop.jogo.entrar;
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.sala.Sala;
 import br.com.jackson.stop.sala.SalaRepository;
-import br.com.jackson.stop.usuario.Usuario;
-import br.com.jackson.stop.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,21 +13,19 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 // Alberto eu criei um service, não me demita
 
 /**
- * @author jackson.mota Classe criada para realizar as operações de entrar num jogo
+ * @author jackson.mota Classe criada para realizar as operações de entrar num jogo relativos à Sala
  */
-//a classe acabou ficando acima de 7 tbm, vou ter que criar outra, rs
+// a classe acabou ficando acima de 7 tbm, vou ter que criar outra, rs
 @Service
-@ICP(9)
-public class EntrarNoJogoService {
+@ICP(5)
+public class EntrarNoJogoSalaService {
 
-  // 2
+  // 1
   private final SalaRepository salaRepository;
-  private final UsuarioRepository usuarioRepository;
 
   @Autowired
-  public EntrarNoJogoService(SalaRepository salaRepository, UsuarioRepository usuarioRepository) {
+  public EntrarNoJogoSalaService(SalaRepository salaRepository) {
     this.salaRepository = salaRepository;
-    this.usuarioRepository = usuarioRepository;
   }
 
   public Sala buscaSalaAleatoria() {
@@ -39,14 +35,6 @@ public class EntrarNoJogoService {
         .filter(Sala::disponivelParaJogoAleatorio)
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis"));
-  }
-
-  // 1
-  public Usuario getUsuario(EntrarNoJogoRequest request) {
-    // 1
-    var usuario = request.toUsuario(usuarioRepository);
-    this.validaSeUsuarioPodeJogar(usuario);
-    return usuario;
   }
 
   public Sala buscaSalaEspecifica(Long salaId, EntrarNoJogoRequest request) {
@@ -65,12 +53,5 @@ public class EntrarNoJogoService {
     }
 
     return sala;
-  }
-
-  private void validaSeUsuarioPodeJogar(Usuario usuario) {
-    // 1
-    if (!usuario.podeJogar()) {
-      throw new ResponseStatusException(BAD_REQUEST, "Usuário já está jogando em outra sala");
-    }
   }
 }
