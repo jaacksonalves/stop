@@ -76,36 +76,6 @@ class SalaTest {
   }
 
   @Nested
-  class MetodoValidaEntradaTest {
-    @Test
-    @DisplayName("Deve validar entrada caso sala não seja privada")
-    void teste1() {
-      var sala = criaSalaSemSenha();
-      var request = criaEntrarNoJogoRequest(null);
-
-      assertTrue(sala.validaEntrada(request.senha()));
-    }
-
-    @Test
-    @DisplayName("Deve validar entrada caso sala seja privada e senha seja correta")
-    void teste2() {
-      var sala = criaSalaComSenha();
-      var request = criaEntrarNoJogoRequest("senha");
-
-      assertTrue(sala.validaEntrada(request.senha()));
-    }
-
-    @Test
-    @DisplayName("Não deve validar entrada caso sala seja privada e senha seja incorreta")
-    void teste3() {
-      var sala = criaSalaComSenha();
-      var request = criaEntrarNoJogoRequest("senhaIncorreta");
-
-      assertFalse(sala.validaEntrada(request.senha()));
-    }
-  }
-
-  @Nested
   class MetodoaAdicionarUsuarioTest {
     @Test
     @DisplayName("Deve adicionar usuario a sala")

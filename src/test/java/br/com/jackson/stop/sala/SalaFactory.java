@@ -1,6 +1,5 @@
 package br.com.jackson.stop.sala;
 
-import br.com.jackson.stop.jogo.EntrarNoJogoRequest;
 import br.com.jackson.stop.usuario.Usuario;
 
 import java.util.List;
@@ -48,7 +47,4 @@ public class SalaFactory {
     return new Usuario("usuario");
   }
 
-  public static EntrarNoJogoRequest criaEntrarNoJogoRequest(String senha) {
-    return new EntrarNoJogoRequest("nome", senha, null);
-  }
 }

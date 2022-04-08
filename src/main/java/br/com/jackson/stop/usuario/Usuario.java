@@ -1,5 +1,6 @@
 package br.com.jackson.stop.usuario;
 
+import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.sala.Sala;
 import org.springframework.util.Assert;
 
@@ -7,18 +8,23 @@ import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@ICP(3.5)
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
 
+  // 0.5
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
+  // 0.5
   private String nome;
 
+  // 0.5
   private Integer nota;
 
+  // 1
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Sala sala;
 
@@ -53,6 +59,7 @@ public class Usuario {
   }
 
   public boolean podeJogar() {
+    // 1
     return this.sala == null;
   }
 }

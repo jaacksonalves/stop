@@ -21,7 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(9)
+@ICP(11.5)
 public class Sala {
 
   // 0.5
@@ -148,12 +148,6 @@ public class Sala {
     return this.usuarios.size() < this.maximoJogadores;
   }
 
-  public boolean validaEntrada(String senha) {
-    Assert.state(this.temVaga(), "Sala está cheia");
-    // 2
-    return !this.privada || this.senha.equals(senha);
-  }
-
   public void adicionarUsuario(Usuario usuario) {
     Assert.state(this.temVaga(), "Sala está cheia");
     Assert.state(usuario.podeJogar(), "Usuario já está em uma sala");
@@ -170,5 +164,10 @@ public class Sala {
 
   public int getJogadoresAtuais() {
     return this.usuarios.size();
+  }
+
+  public boolean validaEntrada(String senha) {
+    // 2
+    return !this.privada || this.senha.equals(senha);
   }
 }
