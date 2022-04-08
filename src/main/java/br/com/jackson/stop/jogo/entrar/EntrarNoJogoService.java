@@ -17,6 +17,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 /**
  * @author jackson.mota Classe criada para realizar as operações de entrar num jogo
  */
+//a classe acabou ficando acima de 7 tbm, vou ter que criar outra, rs
 @Service
 @ICP(9)
 public class EntrarNoJogoService {

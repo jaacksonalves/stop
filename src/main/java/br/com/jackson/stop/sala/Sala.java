@@ -21,7 +21,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(11.5)
+@ICP(7.5)
+//não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
 public class Sala {
 
   // 0.5
@@ -145,7 +146,7 @@ public class Sala {
 
   public boolean temVaga() {
     // 1
-    return this.usuarios.size() < this.maximoJogadores;
+    return new SalaPartial1(this).temVaga();
   }
 
   public void adicionarUsuario(Usuario usuario) {
@@ -158,8 +159,7 @@ public class Sala {
 
   /** verifica se a sala não é privada e se ainda tem espaço para entrar mais usuários */
   public boolean disponivelParaJogoAleatorio() {
-    // 2
-    return !this.privada && this.temVaga();
+    return new SalaPartial1(this).disponivelParaJogoAleatorio();
   }
 
   public int getJogadoresAtuais() {
@@ -167,7 +167,6 @@ public class Sala {
   }
 
   public boolean validaEntrada(String senha) {
-    // 2
-    return !this.privada || this.senha.equals(senha);
+    return new SalaPartial1(this).validaEntrada(senha);
   }
 }
