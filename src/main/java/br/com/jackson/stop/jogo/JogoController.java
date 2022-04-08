@@ -37,7 +37,7 @@ public class JogoController {
       @Valid @RequestBody EntrarNoJogoRequest request) {
     var salaDisponivel =
         salaRepository.findAll().stream()
-            .filter(Sala::salaLivreEComVagaDisponivel)
+            .filter(Sala::disponivelParaJogoAleatorio)
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis"));
     // 1

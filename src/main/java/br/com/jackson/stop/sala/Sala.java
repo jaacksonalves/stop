@@ -163,7 +163,7 @@ public class Sala {
   }
 
   /** verifica se a sala não é privada e se ainda tem espaço para entrar mais usuários */
-  public boolean salaLivreEComVagaDisponivel() {
+  public boolean disponivelParaJogoAleatorio() {
     // 2
     return !this.privada && this.temVaga();
   }
