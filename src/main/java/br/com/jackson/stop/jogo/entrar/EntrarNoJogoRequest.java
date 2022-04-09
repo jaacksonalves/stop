@@ -12,18 +12,18 @@ import javax.validation.constraints.NotBlank;
 public class EntrarNoJogoRequest {
 
   // 1.5
-  @NotBlank private String nomeJogador;
+  @NotBlank private String nomeUsuario;
   private String senha;
   private Long idUsuario;
 
-  public EntrarNoJogoRequest(String nomeJogador) {
-    this.nomeJogador = nomeJogador;
+  public EntrarNoJogoRequest(String nomeUsuario) {
+    this.nomeUsuario = nomeUsuario;
   }
 
   public EntrarNoJogoRequest() {}
 
-  public String getNomeJogador() {
-    return nomeJogador;
+  public String getNomeUsuario() {
+    return nomeUsuario;
   }
 
   public String getSenha() {
@@ -48,7 +48,7 @@ public class EntrarNoJogoRequest {
   public Usuario toUsuario(UsuarioRepository usuarioRepository) {
     // 1
     if (idUsuario == null) {
-      return new Usuario(nomeJogador);
+      return new Usuario(nomeUsuario);
     }
     return usuarioRepository
         .findById(idUsuario)

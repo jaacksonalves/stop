@@ -19,6 +19,15 @@ public class SalaFactory {
         4, 4, List.of(new Categoria(CATEGORIA_1)), List.of("A", "B", "C", "D"), TempoJogo.MEDIO);
   }
 
+  public static Sala criaSalaSemSenhaSemVaga() {
+    var sala = criaSalaSemSenha();
+    sala.adicionarUsuario(criaUsuario());
+    sala.adicionarUsuario(criaUsuario());
+    sala.adicionarUsuario(criaUsuario());
+    sala.adicionarUsuario(criaUsuario());
+    return sala;
+  }
+
   public static Sala criaSalaComSenha() {
     var sala =
         new Sala(
@@ -46,5 +55,4 @@ public class SalaFactory {
   public static Usuario criaUsuario() {
     return new Usuario("usuario");
   }
-
 }
