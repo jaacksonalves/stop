@@ -17,13 +17,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-class EntrarNoJogoUsuarioServiceTest {
+class BuscaUsuarioParaEntrarNoJogoTest {
 
   @Mock private UsuarioRepository usuarioRepository;
-  @InjectMocks private EntrarNoJogoUsuarioService service;
+  @InjectMocks private BuscaUsuarioParaEntrarNoJogo service;
 
   @Nested
   class GetUsuarioTest {
@@ -62,6 +63,23 @@ class EntrarNoJogoUsuarioServiceTest {
       assertAll(
           () -> assertEquals(BAD_REQUEST, ex.getStatus()),
           () -> assertEquals("Usuário já está jogando em outra sala", ex.getReason()));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando usuário não existir pelo id informado")
+    void teste3() {
+      var request = new EntrarNoJogoRequest("nome");
+      request.setIdUsuario(1L);
+
+      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.empty());
+
+      var ex = assertThrows(ResponseStatusException.class, () -> service.getUsuario(request));
+      verify(usuarioRepository).findById(request.getIdUsuario());
+      verifyNoMoreInteractions(usuarioRepository);
+
+      assertAll(
+          () -> assertEquals(NOT_FOUND, ex.getStatus()),
+          () -> assertEquals("Usuário não encontrado", ex.getReason()));
     }
   }
 }

@@ -89,10 +89,10 @@ class NovaSalaRequestTest {
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(
           () -> assertNotNull(sala),
-          () -> assertEquals(request.rodadas(), sala.getRodadas()),
+          () -> assertEquals(request.rodadas(), sala.getInformacoesSala().getRodadas()),
           () -> assertEquals(request.letras(), sala.getLetras()),
-          () -> assertEquals(request.maximoJogadores(), sala.getMaximoJogadores()),
-          () -> assertEquals(request.tempoJogo(), sala.getTempoJogo()),
+          () -> assertEquals(request.maximoJogadores(), sala.getInformacoesSala().getMaximoJogadores()),
+          () -> assertEquals(request.tempoJogo(), sala.getInformacoesSala().getTempoJogo()),
           () -> assertEquals(request.senha(), sala.getSenha()),
           () -> assertTrue(sala.isPrivada()));
     }
@@ -110,10 +110,10 @@ class NovaSalaRequestTest {
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(
           () -> assertNotNull(sala),
-          () -> assertEquals(request.rodadas(), sala.getRodadas()),
+          () -> assertEquals(request.rodadas(), sala.getInformacoesSala().getRodadas()),
           () -> assertEquals(request.letras(), sala.getLetras()),
-          () -> assertEquals(request.maximoJogadores(), sala.getMaximoJogadores()),
-          () -> assertEquals(request.tempoJogo(), sala.getTempoJogo()),
+          () -> assertEquals(request.maximoJogadores(), sala.getInformacoesSala().getMaximoJogadores()),
+          () -> assertEquals(request.tempoJogo(), sala.getInformacoesSala().getTempoJogo()),
           () -> assertEquals(request.senha(), sala.getSenha()),
           () -> assertFalse(sala.isPrivada()));
     }
@@ -130,10 +130,10 @@ class NovaSalaRequestTest {
       var sala = request.toSala(categoriaRepositoryMock);
       Assertions.assertAll(
           () -> assertNotNull(sala),
-          () -> assertEquals(request.rodadas(), sala.getRodadas()),
+          () -> assertEquals(request.rodadas(), sala.getInformacoesSala().getRodadas()),
           () -> assertEquals(request.letras(), sala.getLetras()),
-          () -> assertEquals(request.maximoJogadores(), sala.getMaximoJogadores()),
-          () -> assertEquals(request.tempoJogo(), sala.getTempoJogo()),
+          () -> assertEquals(request.maximoJogadores(), sala.getInformacoesSala().getMaximoJogadores()),
+          () -> assertEquals(request.tempoJogo(), sala.getInformacoesSala().getTempoJogo()),
           () -> assertEquals(request.senha(), sala.getSenha()),
           () -> assertTrue(sala.isPrivada()));
     }

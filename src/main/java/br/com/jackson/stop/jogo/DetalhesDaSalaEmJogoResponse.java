@@ -15,7 +15,7 @@ public class DetalhesDaSalaEmJogoResponse {
   public DetalhesDaSalaEmJogoResponse(Sala sala) {
     this.usuarios = sala.getUsuarios().stream().map(UsuarioResponse::new).toList();
     this.letras = sala.getLetras();
-    this.rodadas = sala.getRodadas();
+    this.rodadas = sala.getInformacoesSala().getRodadas();
     this.categorias = sala.getCategorias().stream().map(CategoriaResponse::new).toList();
   }
 

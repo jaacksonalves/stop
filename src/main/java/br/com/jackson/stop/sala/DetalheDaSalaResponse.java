@@ -8,7 +8,7 @@ public class DetalheDaSalaResponse {
   private final List<String> letras;
 
   public DetalheDaSalaResponse(Sala sala) {
-    this.tempoJogo = sala.getTempoJogo();
+    this.tempoJogo = sala.getInformacoesSala().getTempoJogo();
     this.categorias = sala.getCategorias().stream().map(CategoriaResponse::new).toList();
     this.letras = sala.getLetras();
   }

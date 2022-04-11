@@ -21,8 +21,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(7.5)
-//não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
+@ICP(6.5)
+// não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
 public class Sala {
 
   // 0.5
@@ -30,14 +30,10 @@ public class Sala {
   @GeneratedValue(strategy = IDENTITY)
   @Column(nullable = false)
   private Long id;
-  // 0.5
-  @Column(nullable = false)
-  @Range(min = 1, max = 12)
-  private int rodadas;
-  // 0.5
-  @Column(nullable = false)
-  @Range(min = 1, max = 12)
-  private int maximoJogadores;
+
+  // 1
+  @Embedded private InformacoesSala informacoesSala;
+
   // 0.5
   private String senha;
   // 0.5
@@ -46,10 +42,7 @@ public class Sala {
   @LetrasPermitidas
   @UniqueElements
   private List<String> letras;
-  // 1
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private TempoJogo tempoJogo;
+
   // 0.5
   @Column(nullable = false)
   private boolean privada = false;
@@ -57,7 +50,6 @@ public class Sala {
   // 1
   @ManyToMany(cascade = {PERSIST, MERGE})
   private final List<Categoria> categorias = new ArrayList<>();
-
   // 1
   @OneToMany(
       mappedBy = "sala",
@@ -92,19 +84,13 @@ public class Sala {
         "A quantidade de letras deve ser maior ou igual ao número de rodadas");
     Assert.notNull(tempoJogo, "Tempo de jogo nao pode ser nulo");
 
-    this.rodadas = rodadas;
-    this.maximoJogadores = maximoJogadores;
+    this.informacoesSala = new InformacoesSala(rodadas, maximoJogadores, tempoJogo);
     this.categorias.addAll(categorias);
     this.letras = letras;
-    this.tempoJogo = tempoJogo;
   }
 
-  public int getRodadas() {
-    return rodadas;
-  }
-
-  public int getMaximoJogadores() {
-    return maximoJogadores;
+  public InformacoesSala getInformacoesSala() {
+    return informacoesSala;
   }
 
   public String getSenha() {
@@ -117,10 +103,6 @@ public class Sala {
 
   public List<String> getLetras() {
     return letras;
-  }
-
-  public TempoJogo getTempoJogo() {
-    return tempoJogo;
   }
 
   public boolean isPrivada() {

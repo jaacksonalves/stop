@@ -57,7 +57,7 @@ class EntrarNoJogoControllerTest {
           .andExpect(jsonPath("letras[1]").value(sala1.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala1.getLetras().get(2)))
           .andExpect(jsonPath("letras[3]").value(sala1.getLetras().get(3)))
-          .andExpect(jsonPath("rodadas").value(sala1.getRodadas()))
+          .andExpect(jsonPath("rodadas").value(sala1.getInformacoesSala().getRodadas()))
           .andExpect(
               jsonPath("categorias[0].nomeCategoria")
                   .value(sala1.getCategorias().get(0).getNome()));
@@ -112,7 +112,7 @@ class EntrarNoJogoControllerTest {
           .andExpect(jsonPath("letras[1]").value(sala.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala.getLetras().get(2)))
           .andExpect(jsonPath("letras[3]").value(sala.getLetras().get(3)))
-          .andExpect(jsonPath("rodadas").value(sala.getRodadas()))
+          .andExpect(jsonPath("rodadas").value(sala.getInformacoesSala().getRodadas()))
           .andExpect(
               jsonPath("categorias[0].nomeCategoria").value(sala.getCategorias().get(0).getNome()));
 
@@ -142,7 +142,7 @@ class EntrarNoJogoControllerTest {
           .andExpect(jsonPath("letras[1]").value(sala.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala.getLetras().get(2)))
           .andExpect(jsonPath("letras[3]").value(sala.getLetras().get(3)))
-          .andExpect(jsonPath("rodadas").value(sala.getRodadas()))
+          .andExpect(jsonPath("rodadas").value(sala.getInformacoesSala().getRodadas()))
           .andExpect(
               jsonPath("categorias[0].nomeCategoria").value(sala.getCategorias().get(0).getNome()));
 

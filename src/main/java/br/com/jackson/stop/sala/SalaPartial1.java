@@ -28,6 +28,6 @@ public class SalaPartial1 {
 
   public boolean temVaga() {
     // 1
-    return this.sala.getJogadoresAtuais() < this.sala.getMaximoJogadores();
+    return this.sala.getJogadoresAtuais() < this.sala.getInformacoesSala().getMaximoJogadores();
   }
 }

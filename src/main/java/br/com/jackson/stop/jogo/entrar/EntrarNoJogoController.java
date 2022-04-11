@@ -4,9 +4,12 @@ import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.jogo.DetalhesDaSalaEmJogoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/jogo")
@@ -14,14 +17,14 @@ import javax.validation.Valid;
 public class EntrarNoJogoController {
 
   // 2
-  private final EntrarNoJogoSalaService salaService;
-  private final EntrarNoJogoUsuarioService usuarioService;
+  private final BuscaSalaParaEntrarNoJogo buscaSala;
+  private final BuscaUsuarioParaEntrarNoJogo buscaUsuario;
 
   @Autowired
   public EntrarNoJogoController(
-      EntrarNoJogoSalaService salaService, EntrarNoJogoUsuarioService usuarioService) {
-    this.salaService = salaService;
-    this.usuarioService = usuarioService;
+      BuscaSalaParaEntrarNoJogo buscaSala, BuscaUsuarioParaEntrarNoJogo buscaUsuario) {
+    this.buscaSala = buscaSala;
+    this.buscaUsuario = buscaUsuario;
   }
 
   // 1
@@ -30,10 +33,14 @@ public class EntrarNoJogoController {
   public DetalhesDaSalaEmJogoResponse jogoAleatorio(
       @Valid @RequestBody EntrarNoJogoRequest request) {
     // 1
-    var salaDisponivel = salaService.buscaSalaAleatoria();
+    var salaDisponivel =
+        buscaSala
+            .buscaSalaAleatoria()
+            // 1
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis"));
 
     // 1
-    var usuario = usuarioService.getUsuario(request);
+    var usuario = buscaUsuario.getUsuario(request);
 
     salaDisponivel.adicionarUsuario(usuario);
 
@@ -41,14 +48,13 @@ public class EntrarNoJogoController {
     return new DetalhesDaSalaEmJogoResponse(salaDisponivel);
   }
 
-  // 1
   @PostMapping("/{salaId}")
   @Transactional
   public DetalhesDaSalaEmJogoResponse jogoEspecifico(
       @PathVariable Long salaId, @Valid @RequestBody EntrarNoJogoRequest request) {
-    var sala = salaService.buscaSalaEspecifica(salaId, request);
+    var sala = buscaSala.buscaSalaEspecifica(salaId, request);
 
-    var usuario = usuarioService.getUsuario(request);
+    var usuario = buscaUsuario.getUsuario(request);
 
     sala.adicionarUsuario(usuario);
 
