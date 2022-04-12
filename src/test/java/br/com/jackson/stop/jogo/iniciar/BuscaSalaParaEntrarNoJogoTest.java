@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.sala.SalaRepository;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 class BuscaSalaParaEntrarNoJogoTest {
 
   @Mock private SalaRepository salaRepository;
-  @InjectMocks private BuscaSalaParaEntrarNoJogo service;
+  @InjectMocks private BuscaSalaParaIniciarJogo service;
 
   @Nested
   class BuscaSalaAleatoriaTest {
@@ -68,7 +68,7 @@ class BuscaSalaParaEntrarNoJogoTest {
       @DisplayName("Deve retornar uma sala específica, livre sem senha")
       void teste1() {
         var sala = criaSalaSemSenha();
-        var request = new EntrarNoJogoRequest("nome");
+        var request = new IniciarJogoRequest("nome");
         when(salaRepository.findById(sala.getId())).thenReturn(Optional.of(sala));
 
         var salaRetornada = service.buscaSalaEspecifica(sala.getId(), request);
@@ -81,7 +81,7 @@ class BuscaSalaParaEntrarNoJogoTest {
           "Deve retornar uma sala específica, privada com senha, quando a senha está correta")
       void teste2() {
         var sala = criaSalaComSenha();
-        var request = new EntrarNoJogoRequest("nome");
+        var request = new IniciarJogoRequest("nome");
         request.setSenha(sala.getSenha());
         when(salaRepository.findById(sala.getId())).thenReturn(Optional.of(sala));
 
@@ -93,7 +93,7 @@ class BuscaSalaParaEntrarNoJogoTest {
       @Test
       @DisplayName("Deve lançar exceção quando não há salas")
       void teste3() {
-        var request = new EntrarNoJogoRequest("nome");
+        var request = new IniciarJogoRequest("nome");
         when(salaRepository.findById(1L)).thenReturn(Optional.empty());
 
         var ex =
@@ -110,7 +110,7 @@ class BuscaSalaParaEntrarNoJogoTest {
       void teste4() {
         var sala = criaSalaComSenha();
         var id = sala.getId();
-        var request = new EntrarNoJogoRequest("nome");
+        var request = new IniciarJogoRequest("nome");
         request.setSenha("senhaIncorreta");
         when(salaRepository.findById(id)).thenReturn(Optional.of(sala));
 
@@ -128,7 +128,7 @@ class BuscaSalaParaEntrarNoJogoTest {
       void teste5() {
         var sala = criaSalaSemSenhaSemVaga();
         var id = sala.getId();
-        var request = new EntrarNoJogoRequest("nome");
+        var request = new IniciarJogoRequest("nome");
 
         when(salaRepository.findById(id)).thenReturn(Optional.of(sala));
 

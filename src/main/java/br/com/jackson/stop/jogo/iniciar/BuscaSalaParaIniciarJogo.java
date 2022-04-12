@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.sala.Sala;
@@ -19,13 +19,13 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  */
 @Service
 @ICP(6)
-public class BuscaSalaParaEntrarNoJogo {
+public class BuscaSalaParaIniciarJogo {
 
   // 1
   private final SalaRepository salaRepository;
 
   @Autowired
-  public BuscaSalaParaEntrarNoJogo(SalaRepository salaRepository) {
+  public BuscaSalaParaIniciarJogo(SalaRepository salaRepository) {
     this.salaRepository = salaRepository;
   }
 
@@ -37,7 +37,7 @@ public class BuscaSalaParaEntrarNoJogo {
         .findFirst();
   }
 
-  public Sala buscaSalaEspecifica(Long salaId, EntrarNoJogoRequest request) {
+  public Sala buscaSalaEspecifica(Long salaId, IniciarJogoRequest request) {
     var sala =
         salaRepository
             .findById(salaId)

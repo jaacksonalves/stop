@@ -1,36 +1,35 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.usuario.Usuario;
 import br.com.jackson.stop.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
-@ICP(4)
-public class BuscaUsuarioParaEntrarNoJogo {
+@ICP(5)
+public class BuscaUsuarioParaIniciarJogo {
 
   // 1
   private final UsuarioRepository usuarioRepository;
 
   @Autowired
-  public BuscaUsuarioParaEntrarNoJogo(UsuarioRepository usuarioRepository) {
+  public BuscaUsuarioParaIniciarJogo(UsuarioRepository usuarioRepository) {
     this.usuarioRepository = usuarioRepository;
   }
 
   // 1
-  public Usuario getUsuario(EntrarNoJogoRequest request) {
+  public Usuario getUsuario(IniciarJogoRequest request) {
     // 1
     var usuario =
         request
             .toUsuario(usuarioRepository)
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+            // 1
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Usuário não encontrado"));
 
     this.validaSeUsuarioPodeJogar(usuario);
     return usuario;

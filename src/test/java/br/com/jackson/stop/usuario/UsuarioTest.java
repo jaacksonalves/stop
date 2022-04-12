@@ -24,7 +24,7 @@ class UsuarioTest {
     @DisplayName("Não pode jogar quando está jogando atualmente")
     void teste2() {
       Usuario usuario = new Usuario("nome");
-      usuario.adicionaSala(SalaFactory.criaSalaSemSenha());
+      usuario.setSala(SalaFactory.criaSalaSemSenha());
       assertFalse(usuario.podeJogar());
     }
   }

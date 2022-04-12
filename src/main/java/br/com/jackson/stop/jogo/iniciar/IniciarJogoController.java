@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.jogo.DetalhesDaSalaEmJogoResponse;
@@ -14,15 +14,15 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequestMapping("/api/jogo")
 @ICP(7)
-public class EntrarNoJogoController {
+public class IniciarJogoController {
 
   // 2
-  private final BuscaSalaParaEntrarNoJogo buscaSala;
-  private final BuscaUsuarioParaEntrarNoJogo buscaUsuario;
+  private final BuscaSalaParaIniciarJogo buscaSala;
+  private final BuscaUsuarioParaIniciarJogo buscaUsuario;
 
   @Autowired
-  public EntrarNoJogoController(
-      BuscaSalaParaEntrarNoJogo buscaSala, BuscaUsuarioParaEntrarNoJogo buscaUsuario) {
+  public IniciarJogoController(
+      BuscaSalaParaIniciarJogo buscaSala, BuscaUsuarioParaIniciarJogo buscaUsuario) {
     this.buscaSala = buscaSala;
     this.buscaUsuario = buscaUsuario;
   }
@@ -31,7 +31,7 @@ public class EntrarNoJogoController {
   @PostMapping
   @Transactional
   public DetalhesDaSalaEmJogoResponse jogoAleatorio(
-      @Valid @RequestBody EntrarNoJogoRequest request) {
+      @Valid @RequestBody IniciarJogoRequest request) {
     // 1
     var salaDisponivel =
         buscaSala
@@ -51,7 +51,7 @@ public class EntrarNoJogoController {
   @PostMapping("/{salaId}")
   @Transactional
   public DetalhesDaSalaEmJogoResponse jogoEspecifico(
-      @PathVariable Long salaId, @Valid @RequestBody EntrarNoJogoRequest request) {
+      @PathVariable Long salaId, @Valid @RequestBody IniciarJogoRequest request) {
     var sala = buscaSala.buscaSalaEspecifica(salaId, request);
 
     var usuario = buscaUsuario.getUsuario(request);

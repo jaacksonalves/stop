@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.sala.SalaFactory;
 import br.com.jackson.stop.usuario.Usuario;
@@ -21,10 +21,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-class BuscaUsuarioParaEntrarNoJogoTest {
+class BuscaUsuarioParaIniciarJogoTest {
 
   @Mock private UsuarioRepository usuarioRepository;
-  @InjectMocks private BuscaUsuarioParaEntrarNoJogo service;
+  @InjectMocks private BuscaUsuarioParaIniciarJogo service;
 
   @Nested
   class GetUsuarioTest {
@@ -32,7 +32,7 @@ class BuscaUsuarioParaEntrarNoJogoTest {
     @Test
     @DisplayName("Deve retornar o usuário quando o usuário não estiver num jogo")
     void teste1() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       var usuario = new Usuario("nome");
       request.setIdUsuario(1L);
       when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.of(usuario));
@@ -47,7 +47,7 @@ class BuscaUsuarioParaEntrarNoJogoTest {
     @Test
     @DisplayName("Deve lançar exceção quando o usuário já estiver num jogo")
     void teste2() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       var usuario = new Usuario("nome");
       var sala = SalaFactory.criaSalaSemSenha();
       sala.adicionarUsuario(usuario);
@@ -68,7 +68,7 @@ class BuscaUsuarioParaEntrarNoJogoTest {
     @Test
     @DisplayName("Deve lançar exceção quando usuário não existir pelo id informado")
     void teste3() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       request.setIdUsuario(1L);
 
       when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.empty());

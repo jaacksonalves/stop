@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.usuario.Usuario;
@@ -8,18 +8,18 @@ import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
 @ICP(4.5)
-public class EntrarNoJogoRequest {
+public class IniciarJogoRequest {
 
   // 1.5
   @NotBlank private String nomeUsuario;
   private String senha;
   private Long idUsuario;
 
-  public EntrarNoJogoRequest(String nomeUsuario) {
+  public IniciarJogoRequest(String nomeUsuario) {
     this.nomeUsuario = nomeUsuario;
   }
 
-  public EntrarNoJogoRequest() {}
+  public IniciarJogoRequest() {}
 
   public String getNomeUsuario() {
     return nomeUsuario;

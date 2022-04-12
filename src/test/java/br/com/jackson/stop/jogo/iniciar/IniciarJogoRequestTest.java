@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo.entrar;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.usuario.Usuario;
 import br.com.jackson.stop.usuario.UsuarioRepository;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class EntrarNoJogoRequestTest {
+class IniciarJogoRequestTest {
 
   private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 
@@ -22,7 +22,7 @@ class EntrarNoJogoRequestTest {
     @Test
     @DisplayName("Deve criar um novo Usuario quando id não for informado")
     void teste1() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       var possivelUsuario = request.toUsuario(usuarioRepository);
       var usuario = possivelUsuario.orElseGet(Assertions::fail);
 
@@ -34,7 +34,7 @@ class EntrarNoJogoRequestTest {
     @Test
     @DisplayName("Deve retornar um Usuario quando id for informado e Usuario existir")
     void teste2() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       request.setIdUsuario(1L);
       var novoUsuario = new Usuario(request.getNomeUsuario());
 
@@ -52,7 +52,7 @@ class EntrarNoJogoRequestTest {
     @Test
     @DisplayName("Deve retornar um Optional vazio quando id for informado e Usuario não existir")
     void teste3() {
-      var request = new EntrarNoJogoRequest("nome");
+      var request = new IniciarJogoRequest("nome");
       request.setIdUsuario(1L);
 
       when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.empty());

@@ -132,10 +132,10 @@ public class Sala {
   }
 
   public void adicionarUsuario(Usuario usuario) {
-    Assert.state(this.temVaga(), "Sala está cheia");
-    Assert.state(usuario.podeJogar(), "Usuario já está em uma sala");
+    Assert.state(this.temVaga(), "A sala não deveria estar cheia nesse ponto do código");
+    Assert.state(usuario.podeJogar(), "O Usuário deveria poder jogar nesse ponto do código");
 
-    usuario.adicionaSala(this);
+    usuario.setSala(this);
     this.usuarios.add(usuario);
   }
 

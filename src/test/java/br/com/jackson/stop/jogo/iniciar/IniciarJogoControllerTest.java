@@ -1,6 +1,6 @@
-package br.com.jackson.stop.jogo;
+package br.com.jackson.stop.jogo.iniciar;
 
-import br.com.jackson.stop.jogo.entrar.EntrarNoJogoRequest;
+import br.com.jackson.stop.jogo.iniciar.IniciarJogoRequest;
 import br.com.jackson.stop.sala.SalaFactory;
 import br.com.jackson.stop.sala.SalaRepository;
 import br.com.jackson.stop.usuario.UsuarioRepository;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
-class EntrarNoJogoControllerTest {
+class IniciarJogoControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private SalaRepository salaRepository;
@@ -46,7 +46,7 @@ class EntrarNoJogoControllerTest {
       var sala2 = criaSalaComSenha();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario");
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
@@ -77,7 +77,7 @@ class EntrarNoJogoControllerTest {
       var sala2 = criaSalaComSenha2();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("");
+      var entrarNoJogoRequest = new IniciarJogoRequest("");
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
@@ -101,7 +101,7 @@ class EntrarNoJogoControllerTest {
       var sala = criaSalaSemSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario");
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
@@ -129,7 +129,7 @@ class EntrarNoJogoControllerTest {
       var sala = SalaFactory.criaSalaComSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("usuario");
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
       entrarNoJogoRequest.setSenha("senha");
 
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
@@ -159,7 +159,7 @@ class EntrarNoJogoControllerTest {
       var sala1 = criaSalaSemSenha();
       salaRepository.save(sala1);
 
-      var entrarNoJogoRequest = new EntrarNoJogoRequest("");
+      var entrarNoJogoRequest = new IniciarJogoRequest("");
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
