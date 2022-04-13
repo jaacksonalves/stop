@@ -5,10 +5,8 @@ import br.com.jackson.stop.usuario.Usuario;
 import br.com.jackson.stop.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import java.util.Optional;
 
 @Service
 @ICP(5)
@@ -23,22 +21,21 @@ public class BuscaUsuarioParaIniciarJogo {
   }
 
   // 1
-  public Usuario getUsuario(IniciarJogoRequest request) {
+  public Optional<Usuario> executa(
+      IniciarJogoRequest request,
+      Runnable acaoParaQuandoUsuarioNaoExiste,
+      Runnable acaoParaQuandoUsuarioNaoPodeJogar) {
     // 1
-    var usuario =
-        request
-            .toUsuario(usuarioRepository)
-            // 1
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Usuário não encontrado"));
-
-    this.validaSeUsuarioPodeJogar(usuario);
-    return usuario;
-  }
-
-  private void validaSeUsuarioPodeJogar(Usuario usuario) {
+    var possivelUsuario = request.toUsuario(usuarioRepository);
     // 1
-    if (!usuario.podeJogar()) {
-      throw new ResponseStatusException(BAD_REQUEST, "Usuário já está jogando em outra sala");
+    if (possivelUsuario.isEmpty()) {
+      acaoParaQuandoUsuarioNaoExiste.run();
+      return Optional.empty();
     }
+    // 1
+    if (!possivelUsuario.get().podeJogar()) {
+      acaoParaQuandoUsuarioNaoPodeJogar.run();
+    }
+    return possivelUsuario;
   }
 }

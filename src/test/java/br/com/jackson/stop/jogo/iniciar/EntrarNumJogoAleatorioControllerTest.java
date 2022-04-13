@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
-class IniciarJogoControllerTest {
+class EntrarNumJogoAleatorioControllerTest {
 
   public static final String NOME_USUARIO = "usuario";
   @Autowired private MockMvc mockMvc;
