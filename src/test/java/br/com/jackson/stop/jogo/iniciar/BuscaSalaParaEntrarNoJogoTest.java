@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 class BuscaSalaParaEntrarNoJogoTest {
 
   @Mock private SalaRepository salaRepository;
-  @InjectMocks private BuscaSalaParaIniciarJogo service;
+  @InjectMocks private DetalhesSalaIniciarJogo service;
 
   @Nested
   class BuscaSalaAleatoriaTest {

@@ -1,6 +1,5 @@
 package br.com.jackson.stop.jogo.iniciar;
 
-import br.com.jackson.stop.jogo.iniciar.IniciarJogoRequest;
 import br.com.jackson.stop.sala.SalaFactory;
 import br.com.jackson.stop.sala.SalaRepository;
 import br.com.jackson.stop.usuario.UsuarioRepository;
@@ -31,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class IniciarJogoControllerTest {
 
+  public static final String NOME_USUARIO = "usuario";
   @Autowired private MockMvc mockMvc;
   @Autowired private SalaRepository salaRepository;
   @Autowired private UsuarioRepository usuarioRepository;
@@ -46,13 +46,13 @@ class IniciarJogoControllerTest {
       var sala2 = criaSalaComSenha();
       salaRepository.saveAll(List.of(sala1, sala2));
 
-      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
+      var entrarNoJogoRequest = new IniciarJogoRequest(NOME_USUARIO);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
           .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.getNomeUsuario()))
+          .andExpect(jsonPath("usuarios[0].nome").value(NOME_USUARIO))
           .andExpect(jsonPath("letras[0]").value(sala1.getLetras().get(0)))
           .andExpect(jsonPath("letras[1]").value(sala1.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala1.getLetras().get(2)))
@@ -65,7 +65,7 @@ class IniciarJogoControllerTest {
       var usuario = usuarioRepository.findAll().iterator().next();
 
       assertAll(
-          () -> assertEquals(entrarNoJogoRequest.getNomeUsuario(), usuario.getNome()),
+          () -> assertEquals(NOME_USUARIO, usuario.getNome()),
           () -> assertEquals(sala1, usuario.getSala()),
           () -> assertEquals(1, sala1.getJogadoresAtuais()));
     }
@@ -101,13 +101,13 @@ class IniciarJogoControllerTest {
       var sala = criaSalaSemSenha();
       salaRepository.save(sala);
 
-      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
+      var entrarNoJogoRequest = new IniciarJogoRequest(NOME_USUARIO);
       var request = mapper.writeValueAsString(entrarNoJogoRequest);
 
       mockMvc
           .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.getNomeUsuario()))
+          .andExpect(jsonPath("usuarios[0].nome").value(NOME_USUARIO))
           .andExpect(jsonPath("letras[0]").value(sala.getLetras().get(0)))
           .andExpect(jsonPath("letras[1]").value(sala.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala.getLetras().get(2)))
@@ -119,7 +119,7 @@ class IniciarJogoControllerTest {
       var usuario = usuarioRepository.findAll().iterator().next();
 
       assertAll(
-          () -> assertEquals(entrarNoJogoRequest.getNomeUsuario(), usuario.getNome()),
+          () -> assertEquals(NOME_USUARIO, usuario.getNome()),
           () -> assertEquals(sala, usuario.getSala()));
     }
 
@@ -137,7 +137,7 @@ class IniciarJogoControllerTest {
       mockMvc
           .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("usuarios[0].nome").value(entrarNoJogoRequest.getNomeUsuario()))
+          .andExpect(jsonPath("usuarios[0].nome").value(NOME_USUARIO))
           .andExpect(jsonPath("letras[0]").value(sala.getLetras().get(0)))
           .andExpect(jsonPath("letras[1]").value(sala.getLetras().get(1)))
           .andExpect(jsonPath("letras[2]").value(sala.getLetras().get(2)))
@@ -149,7 +149,7 @@ class IniciarJogoControllerTest {
       var usuario = usuarioRepository.findAll().iterator().next();
 
       assertAll(
-          () -> assertEquals(entrarNoJogoRequest.getNomeUsuario(), usuario.getNome()),
+          () -> assertEquals(NOME_USUARIO, usuario.getNome()),
           () -> assertEquals(sala, usuario.getSala()));
     }
 

@@ -14,6 +14,8 @@ import static org.mockito.Mockito.*;
 
 class IniciarJogoRequestTest {
 
+  public static final String NOME_USUARIO = "usuario";
+  public static final long ID_USUARIO = 1L;
   private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 
   @Nested
@@ -34,32 +36,32 @@ class IniciarJogoRequestTest {
     @Test
     @DisplayName("Deve retornar um Usuario quando id for informado e Usuario existir")
     void teste2() {
-      var request = new IniciarJogoRequest("nome");
-      request.setIdUsuario(1L);
-      var novoUsuario = new Usuario(request.getNomeUsuario());
+      var request = new IniciarJogoRequest(NOME_USUARIO);
+      request.setIdUsuario(ID_USUARIO);
+      var novoUsuario = new Usuario(NOME_USUARIO);
 
-      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.of(novoUsuario));
+      when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(novoUsuario));
 
       var possivelUsuario = request.toUsuario(usuarioRepository);
       var usuario = possivelUsuario.orElseGet(Assertions::fail);
 
-      verify(usuarioRepository).findById(request.getIdUsuario());
+      verify(usuarioRepository).findById(ID_USUARIO);
       verifyNoMoreInteractions(usuarioRepository);
 
-      assertAll(() -> assertEquals(request.getNomeUsuario(), usuario.getNome()));
+      assertAll(() -> assertEquals(NOME_USUARIO, usuario.getNome()));
     }
 
     @Test
     @DisplayName("Deve retornar um Optional vazio quando id for informado e Usuario não existir")
     void teste3() {
       var request = new IniciarJogoRequest("nome");
-      request.setIdUsuario(1L);
+      request.setIdUsuario(ID_USUARIO);
 
-      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.empty());
+      when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.empty());
 
       var possivelUsuario = request.toUsuario(usuarioRepository);
 
-      verify(usuarioRepository).findById(request.getIdUsuario());
+      verify(usuarioRepository).findById(ID_USUARIO);
       verifyNoMoreInteractions(usuarioRepository);
 
       assertAll(() -> assertTrue(possivelUsuario.isEmpty()));

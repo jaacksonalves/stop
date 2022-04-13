@@ -9,20 +9,18 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @RestController
 @RequestMapping("/api/jogo")
-@ICP(7)
+@ICP(9)
 public class IniciarJogoController {
 
   // 2
-  private final BuscaSalaParaIniciarJogo buscaSala;
+  private final DetalhesSalaIniciarJogo buscaSala;
   private final BuscaUsuarioParaIniciarJogo buscaUsuario;
 
   @Autowired
   public IniciarJogoController(
-      BuscaSalaParaIniciarJogo buscaSala, BuscaUsuarioParaIniciarJogo buscaUsuario) {
+      DetalhesSalaIniciarJogo buscaSala, BuscaUsuarioParaIniciarJogo buscaUsuario) {
     this.buscaSala = buscaSala;
     this.buscaUsuario = buscaUsuario;
   }
@@ -33,26 +31,40 @@ public class IniciarJogoController {
   public DetalhesDaSalaEmJogoResponse jogoAleatorio(
       @Valid @RequestBody IniciarJogoRequest request) {
     // 1
-    var salaDisponivel =
-        buscaSala
-            .buscaSalaAleatoria()
-            // 1
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não há salas disponíveis"));
+    var salaIniciarJogo = buscaSala.buscaSalaAleatoria();
+    // 1
+    var sala =
+        salaIniciarJogo
+            .getPossivelSala()
+            .orElseThrow(
+                // 1
+                () ->
+                    new ResponseStatusException(
+                        salaIniciarJogo.getStatus(), salaIniciarJogo.getMensagem()));
 
     // 1
     var usuario = buscaUsuario.getUsuario(request);
 
-    salaDisponivel.adicionarUsuario(usuario);
+    sala.adicionarUsuario(usuario);
 
     // 1
-    return new DetalhesDaSalaEmJogoResponse(salaDisponivel);
+    return new DetalhesDaSalaEmJogoResponse(sala);
   }
 
   @PostMapping("/{salaId}")
   @Transactional
   public DetalhesDaSalaEmJogoResponse jogoEspecifico(
       @PathVariable Long salaId, @Valid @RequestBody IniciarJogoRequest request) {
-    var sala = buscaSala.buscaSalaEspecifica(salaId, request);
+    var salaIniciarJogo = buscaSala.buscaSalaEspecifica(salaId, request);
+
+    var sala =
+        salaIniciarJogo
+            .getPossivelSala()
+            .orElseThrow(
+                // 1
+                () ->
+                    new ResponseStatusException(
+                        salaIniciarJogo.getStatus(), salaIniciarJogo.getMensagem()));
 
     var usuario = buscaUsuario.getUsuario(request);
 

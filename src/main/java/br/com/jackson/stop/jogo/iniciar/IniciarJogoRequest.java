@@ -21,16 +21,8 @@ public class IniciarJogoRequest {
 
   public IniciarJogoRequest() {}
 
-  public String getNomeUsuario() {
-    return nomeUsuario;
-  }
-
   public String getSenha() {
     return senha;
-  }
-
-  public Long getIdUsuario() {
-    return idUsuario;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -39,6 +31,10 @@ public class IniciarJogoRequest {
 
   public void setSenha(String senha) {
     this.senha = senha;
+  }
+
+  public String getNomeUsuario() {
+    return nomeUsuario;
   }
 
   // adicionei o Id do usuário pra simular um usuário já cadastrado anteriormente e enviando o seu

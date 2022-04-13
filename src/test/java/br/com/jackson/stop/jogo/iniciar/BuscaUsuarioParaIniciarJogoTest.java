@@ -23,6 +23,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 @ExtendWith(MockitoExtension.class)
 class BuscaUsuarioParaIniciarJogoTest {
 
+  public static final long ID_USUARIO = 1L;
   @Mock private UsuarioRepository usuarioRepository;
   @InjectMocks private BuscaUsuarioParaIniciarJogo service;
 
@@ -34,11 +35,12 @@ class BuscaUsuarioParaIniciarJogoTest {
     void teste1() {
       var request = new IniciarJogoRequest("nome");
       var usuario = new Usuario("nome");
-      request.setIdUsuario(1L);
-      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.of(usuario));
+      request.setIdUsuario(ID_USUARIO);
+
+      when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
 
       var usuarioRetornado = service.getUsuario(request);
-      verify(usuarioRepository).findById(request.getIdUsuario());
+      verify(usuarioRepository).findById(ID_USUARIO);
       verifyNoMoreInteractions(usuarioRepository);
 
       assertAll(() -> assertEquals(usuario.getNome(), usuarioRetornado.getNome()));
@@ -52,12 +54,12 @@ class BuscaUsuarioParaIniciarJogoTest {
       var sala = SalaFactory.criaSalaSemSenha();
       sala.adicionarUsuario(usuario);
       setField(usuario, "sala", sala);
-      request.setIdUsuario(1L);
+      request.setIdUsuario(ID_USUARIO);
 
-      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.of(usuario));
+      when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
 
       var ex = assertThrows(ResponseStatusException.class, () -> service.getUsuario(request));
-      verify(usuarioRepository).findById(request.getIdUsuario());
+      verify(usuarioRepository).findById(ID_USUARIO);
       verifyNoMoreInteractions(usuarioRepository);
 
       assertAll(
@@ -69,12 +71,12 @@ class BuscaUsuarioParaIniciarJogoTest {
     @DisplayName("Deve lançar exceção quando usuário não existir pelo id informado")
     void teste3() {
       var request = new IniciarJogoRequest("nome");
-      request.setIdUsuario(1L);
+      request.setIdUsuario(ID_USUARIO);
 
-      when(usuarioRepository.findById(request.getIdUsuario())).thenReturn(Optional.empty());
+      when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.empty());
 
       var ex = assertThrows(ResponseStatusException.class, () -> service.getUsuario(request));
-      verify(usuarioRepository).findById(request.getIdUsuario());
+      verify(usuarioRepository).findById(ID_USUARIO);
       verifyNoMoreInteractions(usuarioRepository);
 
       assertAll(
