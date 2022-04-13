@@ -16,6 +16,9 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/jogo")
+/*
+Não deu pra deixar dentro do limite de 7 do CDD menos ainda, vamos continuar tentando?
+ */
 @ICP(10)
 public class EntrarNumJogoEspecificoController {
 
