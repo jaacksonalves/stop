@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GeraJson {
 
-  public GeraJson() {
+  private static final ObjectMapper mapper = new ObjectMapper();
+
+  private GeraJson() {
     throw new IllegalStateException("Classe de utilidade");
   }
-
-  private static final ObjectMapper mapper = new ObjectMapper();
 
   public static String json(Object object) {
     try {

@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class ValidationExceptionResponse {
 
-  private Map<String, List<String>> erros;
   private final String ocorridoEm =
       LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+  private Map<String, List<String>> erros;
 
   public ValidationExceptionResponse(Map<String, List<String>> erros) {
     this.erros = erros;
@@ -24,5 +24,4 @@ public class ValidationExceptionResponse {
   public String getOcorridoEm() {
     return ocorridoEm;
   }
-
 }

@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class ExceptionsHandlerResponse {
 
-  private String mensagem;
   private final String ocorridoEm =
       LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+  private String mensagem;
 
   public ExceptionsHandlerResponse(String mensagem) {
     this.mensagem = mensagem;

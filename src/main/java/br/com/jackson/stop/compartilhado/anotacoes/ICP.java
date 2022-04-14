@@ -9,7 +9,8 @@ import java.lang.annotation.Target;
  * Cada classe tem um determinado número de pontos em função da métrica estabelecida dentro dos
  * princípios do CDD. Essa annotation ajuda a esclarecer.
  *
- * @author albertoluizsouza <- criou em um projeto anterior, estou reutilizando e dando créditos ao criador, rs.
+ * @author albertoluizsouza <- criou em um projeto anterior, estou reutilizando e dando créditos ao
+ *     criador, rs.
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({

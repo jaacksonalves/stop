@@ -34,6 +34,14 @@ class SalaControllerTest {
   @Autowired private ObjectMapper mapper;
   @Autowired private SalaRepository salaRepository;
 
+  private String toJson(NovaSalaRequest request) throws JsonProcessingException {
+    return mapper.writeValueAsString(request);
+  }
+
+  private Object fromJson(String response, Class<?> classe) throws JsonProcessingException {
+    return mapper.readValue(response, classe);
+  }
+
   @Nested
   class MetodoCadastrarTest {
 
@@ -51,13 +59,13 @@ class SalaControllerTest {
 
       assertAll(
           () -> assertEquals(1, salas.size()),
-          () -> assertEquals(request.rodadas(), sala.getRodadas()),
+          () -> assertEquals(request.rodadas(), sala.getInformacoesSala().getRodadas()),
           () -> assertEquals(request.letras(), sala.getLetras()),
           () -> assertEquals(request.categorias().size(), sala.getCategorias().size()),
           () -> assertNotNull(sala.getSenha()),
           () -> assertEquals(request.senha(), sala.getSenha()),
-          () -> assertEquals(request.maximoJogadores(), sala.getMaximoJogadores()),
-          () -> assertEquals(request.tempoJogo(), sala.getTempoJogo()),
+          () -> assertEquals(request.maximoJogadores(), sala.getInformacoesSala().getMaximoJogadores()),
+          () -> assertEquals(request.tempoJogo(), sala.getInformacoesSala().getTempoJogo()),
           () -> assertTrue(sala.isPrivada()));
     }
 
@@ -75,12 +83,12 @@ class SalaControllerTest {
 
       assertAll(
           () -> assertEquals(1, salas.size()),
-          () -> assertEquals(request.rodadas(), sala.getRodadas()),
+          () -> assertEquals(request.rodadas(), sala.getInformacoesSala().getRodadas()),
           () -> assertEquals(request.letras(), sala.getLetras()),
           () -> assertEquals(request.categorias().size(), sala.getCategorias().size()),
           () -> assertNull(sala.getSenha()),
-          () -> assertEquals(request.maximoJogadores(), sala.getMaximoJogadores()),
-          () -> assertEquals(request.tempoJogo(), sala.getTempoJogo()),
+          () -> assertEquals(request.maximoJogadores(), sala.getInformacoesSala().getMaximoJogadores()),
+          () -> assertEquals(request.tempoJogo(), sala.getInformacoesSala().getTempoJogo()),
           () -> assertFalse(sala.isPrivada()));
     }
 
@@ -149,14 +157,14 @@ class SalaControllerTest {
           .andExpect(status().isOk())
           .andExpect(jsonPath("$[0].id").value(sala1.getId().intValue()))
           .andExpect(jsonPath("$[1].id").value(sala2.getId().intValue()))
-          .andExpect(jsonPath("$[0].numeroMaximoParticipantes").value(sala1.getMaximoJogadores()))
-          .andExpect(jsonPath("$[1].numeroMaximoParticipantes").value(sala2.getMaximoJogadores()))
-          .andExpect(jsonPath("$[0].numeroParticipantesAtual").value(sala1.getJogadoresAtuais()))
-          .andExpect(jsonPath("$[1].numeroParticipantesAtual").value(sala2.getJogadoresAtuais()))
+          .andExpect(jsonPath("$[0].numeroMaximoParticipantes").value(sala1.getInformacoesSala().getMaximoJogadores()))
+          .andExpect(jsonPath("$[1].numeroMaximoParticipantes").value(sala2.getInformacoesSala().getMaximoJogadores()))
+          .andExpect(jsonPath("$[0].numeroParticipantesAtual").value(sala1.getUsuarios().size()))
+          .andExpect(jsonPath("$[1].numeroParticipantesAtual").value(sala2.getUsuarios().size()))
           .andExpect(jsonPath("$[0].quantidadeCategorias").value(sala1.getCategorias().size()))
           .andExpect(jsonPath("$[1].quantidadeCategorias").value(sala2.getCategorias().size()))
-          .andExpect(jsonPath("$[0].quantidadeRodadas").value(sala1.getRodadas()))
-          .andExpect(jsonPath("$[1].quantidadeRodadas").value(sala2.getRodadas()))
+          .andExpect(jsonPath("$[0].quantidadeRodadas").value(sala1.getInformacoesSala().getRodadas()))
+          .andExpect(jsonPath("$[1].quantidadeRodadas").value(sala2.getInformacoesSala().getRodadas()))
           .andExpect(jsonPath("$[0].privada").value(false))
           .andExpect(jsonPath("$[1].privada").value(true));
 
@@ -187,7 +195,7 @@ class SalaControllerTest {
       mockMvc
           .perform(get("/api/salas/" + sala.getId()))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("$.tempoJogo").value(sala.getTempoJogo().toString()))
+          .andExpect(jsonPath("$.tempoJogo").value(sala.getInformacoesSala().getTempoJogo().toString()))
           .andExpect(
               jsonPath("$.categorias[0].nomeCategoria")
                   .value(sala.getCategorias().get(0).getNome()))
@@ -206,7 +214,7 @@ class SalaControllerTest {
       mockMvc
           .perform(get("/api/salas/" + sala.getId()))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("$.tempoJogo").value(sala.getTempoJogo().toString()))
+          .andExpect(jsonPath("$.tempoJogo").value(sala.getInformacoesSala().getTempoJogo().toString()))
           .andExpect(
               jsonPath("$.categorias[0].nomeCategoria")
                   .value(sala.getCategorias().get(0).getNome()))
@@ -236,13 +244,5 @@ class SalaControllerTest {
           () -> assertEquals("Sala não encontrada", resposta.getMensagem()),
           () -> assertNotNull(resposta.getOcorridoEm()));
     }
-  }
-
-  private String toJson(NovaSalaRequest request) throws JsonProcessingException {
-    return mapper.writeValueAsString(request);
-  }
-
-  private Object fromJson(String response, Class<?> classe) throws JsonProcessingException {
-    return mapper.readValue(response, classe);
   }
 }

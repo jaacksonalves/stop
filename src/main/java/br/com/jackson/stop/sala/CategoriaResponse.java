@@ -7,7 +7,7 @@ public class CategoriaResponse {
     this.nomeCategoria = categoria.getNome();
   }
 
-    public String getNomeCategoria() {
-        return nomeCategoria;
-    }
+  public String getNomeCategoria() {
+    return nomeCategoria;
+  }
 }

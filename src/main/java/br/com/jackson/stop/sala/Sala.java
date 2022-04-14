@@ -2,23 +2,27 @@ package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import br.com.jackson.stop.usuario.Usuario;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(7)
+@ICP(6.5)
+// não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
 public class Sala {
 
   // 0.5
@@ -27,26 +31,11 @@ public class Sala {
   @Column(nullable = false)
   private Long id;
 
-  // 0.5
-  @Column(nullable = false)
-  @Range(min = 1, max = 12)
-  private int rodadas;
-
-  // 0.5
-  @Column(nullable = false)
-  @Range(min = 1, max = 12)
-  private int maximoJogadores;
-
-  @Max(12)
-  private Integer jogadoresAtuais = 0;
+  // 1
+  @Embedded private InformacoesSala informacoesSala;
 
   // 0.5
   private String senha;
-
-  // 1
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private final List<Categoria> categorias = new ArrayList<>();
-
   // 0.5
   @Column(nullable = false)
   @ElementCollection
@@ -54,13 +43,21 @@ public class Sala {
   @UniqueElements
   private List<String> letras;
 
-  // 1
-  @Column(nullable = false)
-  private TempoJogo tempoJogo;
-
   // 0.5
   @Column(nullable = false)
   private boolean privada = false;
+
+  // 1
+  @ManyToMany(cascade = {PERSIST, MERGE})
+  private final List<Categoria> categorias = new ArrayList<>();
+  // 1
+  @OneToMany(
+      mappedBy = "sala",
+      cascade = {MERGE, PERSIST})
+  @Size(max = 12)
+  private final List<Usuario> usuarios = new ArrayList<>();
+  // 0.5
+  @Version private Integer versao;
 
   /**
    * @deprecated (hibernate only)
@@ -87,19 +84,13 @@ public class Sala {
         "A quantidade de letras deve ser maior ou igual ao número de rodadas");
     Assert.notNull(tempoJogo, "Tempo de jogo nao pode ser nulo");
 
-    this.rodadas = rodadas;
-    this.maximoJogadores = maximoJogadores;
+    this.informacoesSala = new InformacoesSala(rodadas, maximoJogadores, tempoJogo);
     this.categorias.addAll(categorias);
     this.letras = letras;
-    this.tempoJogo = tempoJogo;
   }
 
-  public int getRodadas() {
-    return rodadas;
-  }
-
-  public int getMaximoJogadores() {
-    return maximoJogadores;
+  public InformacoesSala getInformacoesSala() {
+    return informacoesSala;
   }
 
   public String getSenha() {
@@ -114,10 +105,6 @@ public class Sala {
     return letras;
   }
 
-  public TempoJogo getTempoJogo() {
-    return tempoJogo;
-  }
-
   public boolean isPrivada() {
     return privada;
   }
@@ -126,8 +113,8 @@ public class Sala {
     return id;
   }
 
-  public Integer getJogadoresAtuais() {
-    return jogadoresAtuais;
+  public List<Usuario> getUsuarios() {
+    return usuarios;
   }
 
   // quando uma senha é setada, automaticamente a sala fica privada
@@ -139,8 +126,29 @@ public class Sala {
     this.privada = true;
   }
 
-  public boolean salaDisponivel() {
+  public boolean temVaga() {
     // 1
-    return this.jogadoresAtuais < this.maximoJogadores;
+    return new SalaPartial1(this).temVaga();
+  }
+
+  public void adicionarUsuario(Usuario usuario) {
+    Assert.state(this.temVaga(), "A sala não deveria estar cheia nesse ponto do código");
+    Assert.state(usuario.podeJogar(), "O Usuário deveria poder jogar nesse ponto do código");
+
+    usuario.setSala(this);
+    this.usuarios.add(usuario);
+  }
+
+  /** verifica se a sala não é privada e se ainda tem espaço para entrar mais usuários */
+  public boolean disponivelParaJogoAleatorio() {
+    return new SalaPartial1(this).disponivelParaJogoAleatorio();
+  }
+
+  public int getJogadoresAtuais() {
+    return this.usuarios.size();
+  }
+
+  public boolean validaEntrada(String senha) {
+    return new SalaPartial1(this).validaEntrada(senha);
   }
 }
