@@ -72,8 +72,8 @@ class EntrarNumJogoAleatorioControllerTest {
 
     @Test
     @DisplayName("Não deve retornar sala aleatória nome não for enviado")
-    void teste4() throws Exception {
-      var sala1 = criaSalaComSenha();
+    void teste2() throws Exception {
+      var sala1 = criaSalaSemSenha();
       var sala2 = criaSalaComSenha2();
       salaRepository.saveAll(List.of(sala1, sala2));
 
@@ -89,6 +89,63 @@ class EntrarNumJogoAleatorioControllerTest {
       var usuarios = usuarioRepository.findAll();
 
       assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar sala aleatória quando não existir salas")
+    void teste3() throws Exception {
+      var entrarNoJogoRequest = new IniciarJogoRequest("Usuario");
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .andExpect(status().isNotFound())
+          .andExpect(jsonPath("$.mensagem").value("Não há salas disponíveis"))
+          .andExpect(jsonPath("$.ocorridoEm").exists());
+
+      var usuarios = usuarioRepository.findAll();
+
+      assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar sala aleatória quando não existir salas livres não privadas")
+    void teste4() throws Exception {
+      var sala2 = criaSalaComSenha2();
+      salaRepository.save(sala2);
+
+      var entrarNoJogoRequest = new IniciarJogoRequest("Usuario");
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+          .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
+          .andExpect(status().isNotFound())
+          .andExpect(jsonPath("$.mensagem").value("Não há salas disponíveis"))
+          .andExpect(jsonPath("$.ocorridoEm").exists());
+
+      var usuarios = usuarioRepository.findAll();
+
+      assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar sala aleatória quando não existir salas com vagas")
+    void teste5() throws Exception {
+      var sala2 = criaSalaComSenha2();
+      salaRepository.save(sala2);
+      sala2.adicionarUsuario(criaUsuario());
+      sala2.adicionarUsuario(criaUsuario());
+      sala2.adicionarUsuario(criaUsuario());
+      sala2.adicionarUsuario(criaUsuario());
+
+      var entrarNoJogoRequest = new IniciarJogoRequest("Usuario");
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+              .perform(post("/api/jogo").contentType(APPLICATION_JSON).content(request))
+              .andExpect(status().isNotFound())
+              .andExpect(jsonPath("$.mensagem").value("Não há salas disponíveis"))
+              .andExpect(jsonPath("$.ocorridoEm").exists());
     }
   }
 
@@ -155,7 +212,7 @@ class EntrarNumJogoAleatorioControllerTest {
 
     @Test
     @DisplayName("Não deve retornar sala específica se o nome não for enviado")
-    void teste5() throws Exception {
+    void teste3() throws Exception {
       var sala1 = criaSalaSemSenha();
       salaRepository.save(sala1);
 
@@ -171,6 +228,67 @@ class EntrarNumJogoAleatorioControllerTest {
       var usuarios = usuarioRepository.findAll();
 
       assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar um jogo específico, quando sala não existe")
+    void teste4() throws Exception {
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
+
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+          .perform(post("/api/jogo/1").contentType(APPLICATION_JSON).content(request))
+          .andExpect(status().isNotFound())
+          .andExpect(jsonPath("$.mensagem").value("Sala não encontrada"))
+          .andExpect(jsonPath("$.ocorridoEm").exists());
+
+      var usuarios = usuarioRepository.findAll();
+
+      assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar um jogo específico se senha estiver incorreta")
+    void teste5() throws Exception {
+      var sala = SalaFactory.criaSalaComSenha();
+      salaRepository.save(sala);
+
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
+      entrarNoJogoRequest.setSenha("senhaIncorreta");
+
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+          .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.mensagem").value("Senha incorreta"))
+          .andExpect(jsonPath("$.ocorridoEm").exists());
+
+      var usuarios = usuarioRepository.findAll();
+
+      assertAll(() -> assertEquals(0, usuarios.size()));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar um jogo específico se sala estiver lotada")
+    void teste6() throws Exception {
+      var sala = SalaFactory.criaSalaSemSenha();
+      salaRepository.save(sala);
+      sala.adicionarUsuario(criaUsuario());
+      sala.adicionarUsuario(criaUsuario());
+      sala.adicionarUsuario(criaUsuario());
+      sala.adicionarUsuario(criaUsuario());
+
+      var entrarNoJogoRequest = new IniciarJogoRequest("usuario");
+
+      var request = mapper.writeValueAsString(entrarNoJogoRequest);
+
+      mockMvc
+          .perform(post("/api/jogo/" + sala.getId()).contentType(APPLICATION_JSON).content(request))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.mensagem").value("Sala não tem vaga disponível"))
+          .andExpect(jsonPath("$.ocorridoEm").exists());
     }
   }
 }

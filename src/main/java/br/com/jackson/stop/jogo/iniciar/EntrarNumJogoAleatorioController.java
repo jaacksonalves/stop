@@ -55,7 +55,7 @@ public class EntrarNumJogoAleatorioController {
         buscaUsuario.executa(
             request,
             // 2
-            jogaResponseStatusException(NOT_FOUND, "Não há usuários disponíveis"),
+            jogaResponseStatusException(NOT_FOUND, "Usuário não existe"),
             jogaResponseStatusException(BAD_REQUEST, "Usuário já está em um jogo"));
 
     Assert.state(
