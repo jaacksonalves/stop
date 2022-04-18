@@ -1,7 +1,6 @@
 package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
-import br.com.jackson.stop.jogo.DetalhesDaSalaEmJogoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;

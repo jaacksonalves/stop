@@ -1,4 +1,4 @@
-package br.com.jackson.stop.jogo;
+package br.com.jackson.stop.jogo.iniciar;
 
 import br.com.jackson.stop.sala.CategoriaResponse;
 import br.com.jackson.stop.sala.Sala;

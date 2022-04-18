@@ -4,7 +4,12 @@ import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.PartialClass;
 import org.springframework.util.Assert;
 
-@ICP(6)
+import java.util.Map;
+
+/*
+Aqui o ICP passou de 7, eu poderia criar uma outra Partial, vc quem vai me dizer rs
+ */
+@ICP(8)
 @PartialClass(Sala.class)
 public class SalaPartial1 {
   // 1
@@ -29,5 +34,12 @@ public class SalaPartial1 {
   public boolean temVaga() {
     // 1
     return this.sala.getJogadoresAtuais() < this.sala.getInformacoesSala().getMaximoJogadores();
+  }
+
+  public boolean validaRespostasPertencemASala(Map<String, String> respostas) {
+    var nomesCategorias = this.sala.getCategorias().stream().map(Categoria::getNome).toList();
+    // 2
+    return nomesCategorias.containsAll(respostas.keySet())
+        && respostas.keySet().containsAll(nomesCategorias);
   }
 }
