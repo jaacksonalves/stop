@@ -24,7 +24,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "salas")
 @ICP(8)
-// não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
 public class Sala {
 
   // 0.5
