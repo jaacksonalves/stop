@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@ICP(3.5)
+@ICP(5.5)
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -61,5 +61,17 @@ public class Usuario {
   public boolean podeJogar() {
     // 1
     return this.sala == null;
+  }
+
+  public boolean estaNaSala(Sala sala) {
+    Assert.notNull(sala, "Sala não pode ser nula");
+    // 1
+    return sala.equals(this.sala);
+  }
+
+  public boolean jaRespondeu(Sala sala) {
+    Assert.notNull(sala, "Sala não pode ser nula");
+    //1
+    return sala.contemRespostasParaUsuario(this);
   }
 }

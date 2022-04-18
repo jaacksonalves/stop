@@ -2,6 +2,7 @@ package br.com.jackson.stop.sala;
 
 import br.com.jackson.stop.compartilhado.anotacoes.ICP;
 import br.com.jackson.stop.compartilhado.anotacoes.LetrasPermitidas;
+import br.com.jackson.stop.jogo.resposta.Resposta;
 import br.com.jackson.stop.usuario.Usuario;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
@@ -21,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "salas")
-@ICP(6.5)
+@ICP(8)
 // não consegui diminuir mais o ICP dessa classe, preciso de ajuda.
 public class Sala {
 
@@ -56,6 +58,13 @@ public class Sala {
       cascade = {MERGE, PERSIST})
   @Size(max = 12)
   private final List<Usuario> usuarios = new ArrayList<>();
+
+  // 0.5
+  @OneToMany(
+      mappedBy = "sala",
+      cascade = {MERGE, PERSIST})
+  private final List<Resposta> respostas = new ArrayList<>();
+
   // 0.5
   @Version private Integer versao;
 
@@ -150,5 +159,21 @@ public class Sala {
 
   public boolean validaEntrada(String senha) {
     return new SalaPartial1(this).validaEntrada(senha);
+  }
+
+  public boolean validaRespostasPertencemASala(Map<String, String> respostas) {
+    return new SalaPartial1(this).validaRespostasPertencemASala(respostas);
+  }
+
+  public void adicionaRespostas(Map<String, String> respostas, Usuario usuario) {
+    Assert.notNull(usuario, "Usuário não pode ser nulo");
+    Assert.notNull(respostas, "Respostas não podem ser nulas");
+    Assert.state(this.validaRespostasPertencemASala(respostas), "Respostas não pertencem a sala");
+    this.respostas.add(new Resposta(this, usuario, respostas));
+  }
+
+  public boolean contemRespostasParaUsuario(Usuario usuario) {
+    // 1
+    return this.respostas.stream().anyMatch(r -> r.existeRespostaParaUsuario(usuario));
   }
 }
